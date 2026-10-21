@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+docs/dist/
+examples/dist/
+test-results/
+playwright-report/
+*.tgz
+.DS_Store
+*.log
+.tmp/
