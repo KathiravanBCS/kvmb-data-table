@@ -65,6 +65,5 @@ export interface DataGridColumnMeta<TData extends RowData, TValue> {
 }
 
 declare module '@tanstack/react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- type parameters must match TanStack's declaration
   interface ColumnMeta<TData extends RowData, TValue> extends DataGridColumnMeta<TData, TValue> {}
 }

@@ -11,7 +11,7 @@ export function EmptyState({ filtered, labels, className, style }: { filtered: b
       <div role="gridcell" className="mdg-state-cell">
         <Stack align="center" gap={4} py="xl">
           <IconDatabaseOff size={28} stroke={1.5} className="mdg-state-icon" aria-hidden />
-          <Text size="sm" c="dimmed">
+          <Text size="sm" className="mdg-muted">
             {filtered ? labels.noResults : labels.noRows}
           </Text>
         </Stack>

@@ -69,10 +69,9 @@ export function ColumnFilterPanel<TData extends RowData>({ column }: ColumnFilte
           else apply(operator, v);
         }}
       />
-      <Button
+      <Button color="gray" c="var(--mantine-color-text)"
         size="compact-xs"
         variant="subtle"
-        color="gray"
         disabled={!existing}
         onClick={() => {
           setValue(undefined);

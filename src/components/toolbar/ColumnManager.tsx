@@ -99,10 +99,10 @@ export function ColumnManager<TData extends RowData>() {
       <Popover.Dropdown p="xs" role="dialog" aria-label={labels.columns}>
         <Stack gap={4} miw={240}>
           <Group gap={4} justify="space-between">
-            <Button size="compact-xs" variant="subtle" onClick={() => table.toggleAllColumnsVisible(true)}>
+            <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => table.toggleAllColumnsVisible(true)}>
               {labels.showAllColumns}
             </Button>
-            <Button
+            <Button color="gray" c="var(--mantine-color-text)"
               size="compact-xs"
               variant="subtle"
               onClick={() => {
@@ -111,7 +111,7 @@ export function ColumnManager<TData extends RowData>() {
             >
               {labels.hideAllColumns}
             </Button>
-            <Button size="compact-xs" variant="subtle" color="gray" onClick={() => api.resetColumnLayout()}>
+            <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => api.resetColumnLayout()}>
               {labels.resetColumns}
             </Button>
           </Group>

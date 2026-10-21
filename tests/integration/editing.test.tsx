@@ -79,7 +79,7 @@ describe('cell editing', () => {
     const user = userEvent.setup();
     const onError = vi.fn();
     let reject!: (e: Error) => void;
-    const onRowUpdate = vi.fn(() => new Promise<void>((_, r) => (reject = r)));
+    const onRowUpdate = vi.fn((_row: Employee) => new Promise<void>((_, r) => (reject = r)));
     const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} enableEditing onRowUpdate={onRowUpdate} onEditError={onError} />);
     await user.dblClick(cell(container, 0, 'address_city'));
     const input = screen.getByRole('textbox', { name: 'City' });
@@ -98,7 +98,7 @@ describe('cell editing', () => {
   it('waits for the server before applying when optimistic updates are off', async () => {
     const user = userEvent.setup();
     let resolve!: (row: Employee) => void;
-    const onRowUpdate = vi.fn(() => new Promise<Employee>((r) => (resolve = r)));
+    const onRowUpdate = vi.fn((_row: Employee) => new Promise<Employee>((r) => (resolve = r)));
     const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} enableEditing optimisticUpdates={false} onRowUpdate={onRowUpdate} />);
     await user.dblClick(cell(container, 0, 'name'));
     const input = screen.getByRole('textbox', { name: 'Name' });

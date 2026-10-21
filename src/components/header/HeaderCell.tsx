@@ -142,7 +142,7 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
         toggleSort(e.shiftKey || e.metaKey || e.ctrlKey);
       }}
     >
-      {draggable && <DragHandle label={`${labels.dragColumn}: ${label}`} size={14} className="mdg-drag-handle mdg-header-drag-handle" />}
+      {draggable && <DragHandle label={`${labels.dragColumn}: ${label}`} size={12} className="mdg-drag-handle mdg-header-drag-handle" />}
       <div className="mdg-header-content">
         <span className="mdg-header-label">{header.isPlaceholder ? null : flexRender(column.columnDef.header, header.getContext())}</span>
         {sortable && <SortIcon direction={sorted} index={sortIndex} />}

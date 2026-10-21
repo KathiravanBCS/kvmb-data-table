@@ -190,11 +190,11 @@ function GroupEditor<TData extends RowData>(props: NodeEditorProps<TData> & { gr
         ),
       )}
       <Group gap="xs">
-        <Button size="compact-xs" variant="light" leftSection={<IconPlus size={12} />} onClick={addCondition} disabled={!firstColumn}>
+        <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="light" leftSection={<IconPlus size={12} />} onClick={addCondition} disabled={!firstColumn}>
           {labels.addFilter}
         </Button>
         {depth + 1 < maxDepth && (
-          <Button size="compact-xs" variant="subtle" leftSection={<IconPlus size={12} />} onClick={addGroup} disabled={!firstColumn}>
+          <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconPlus size={12} />} onClick={addGroup} disabled={!firstColumn}>
             {labels.addGroup}
           </Button>
         )}
@@ -247,13 +247,13 @@ export function FilterPresetsMenu({ presets, current, onApply, onChange, labels,
   return (
     <Menu position="bottom-start" withinPortal={withinPortal} closeOnItemClick={false} classNames={{ dropdown: FILTER_DROPDOWN_CLASS }}>
       <Menu.Target>
-        <Button size="compact-xs" variant="subtle" leftSection={<IconBookmark size={12} />}>
+        <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconBookmark size={12} />}>
           {labels.filterPresets}
         </Button>
       </Menu.Target>
       <Menu.Dropdown miw={240}>
         {presets.length === 0 && (
-          <Text size="xs" c="dimmed" px="sm" py={6}>
+          <Text size="xs" className="mdg-muted" px="sm" py={6}>
             {labels.noPresets}
           </Text>
         )}

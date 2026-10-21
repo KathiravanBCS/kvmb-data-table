@@ -163,7 +163,7 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
   const [density, setDensity] = useControllableState<GridDensity>(
     props.density,
     props.onDensityChange,
-    () => props.defaultDensity ?? persisted.density ?? 'standard',
+    () => persisted.density ?? props.defaultDensity ?? 'standard',
   );
 
   const [sorting, setSortingRaw] = useControllableState<SortingState>(
@@ -190,8 +190,8 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
     props.pagination,
     props.onPaginationChange,
     () => ({
-      pageIndex: props.defaultPagination?.pageIndex ?? persisted.pagination?.pageIndex ?? 0,
-      pageSize: props.defaultPagination?.pageSize ?? persisted.pagination?.pageSize ?? props.pageSizeOptions?.[0] ?? DEFAULT_PAGE_SIZE,
+      pageIndex: persisted.pagination?.pageIndex ?? props.defaultPagination?.pageIndex ?? 0,
+      pageSize: persisted.pagination?.pageSize ?? props.defaultPagination?.pageSize ?? props.pageSizeOptions?.[0] ?? DEFAULT_PAGE_SIZE,
     }),
   );
   const [rowSelection, setRowSelection] = useControllableState<RowSelectionState>(

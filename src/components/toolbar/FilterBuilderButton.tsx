@@ -38,7 +38,7 @@ export function FilterBuilderButton<TData extends RowData>() {
       <Popover.Target>
         <Button
           size="xs"
-          variant={activeFilterCount ? 'light' : 'default'}
+          variant="default"
           leftSection={<IconFilter size={14} />}
           rightSection={activeFilterCount ? <Badge size="xs" circle>{activeFilterCount}</Badge> : null}
           onClick={() => (opened ? setOpened(false) : open())}

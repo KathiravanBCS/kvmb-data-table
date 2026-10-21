@@ -1,0 +1,32 @@
+// Example NestJS controller for the grid's server-side mode (documentation only).
+import { BadRequestException, Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { EmployeesService } from './employees.service';
+import type { FilterGroup } from '@kvmb/react-data-grid';
+
+@Controller('api/employees')
+export class EmployeesController {
+  constructor(private readonly employees: EmployeesService) {}
+
+  @Get()
+  list(
+    @Query('page') page = '1',
+    @Query('pageSize') pageSize = '25',
+    @Query('sort') sort = '',
+    @Query('search') search = '',
+    @Query('filter') filter?: string,
+  ) {
+    let model: FilterGroup | null = null;
+    try {
+      model = filter ? JSON.parse(filter) : null;
+    } catch {
+      throw new BadRequestException('filter must be a JSON FilterGroup');
+    }
+    // Translate `model` into your ORM's where-clause (TypeORM / Prisma / Mongo ...).
+    return this.employees.findPaginated({ page: +page, pageSize: +pageSize, sort, search, filter: model });
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() body: unknown) {
+    return this.employees.update(id, body);
+  }
+}

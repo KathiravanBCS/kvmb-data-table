@@ -4,6 +4,11 @@ import type { CellContext, ColumnDef, RowData } from '@tanstack/react-table';
 import { ACTIONS_COLUMN_ID } from '../../core/grid.constants';
 import { useDataGridContext } from '../../core/DataGridProvider';
 
+function ActionsHeader() {
+  const { labels } = useDataGridContext();
+  return <span className="mdg-sr-only">{labels.rowActions}</span>;
+}
+
 function ActionsCell<TData extends RowData>({ row, table }: CellContext<TData, unknown>) {
   const { editing, labels } = useDataGridContext<TData>();
   if (row.getIsGrouped()) return null;
@@ -81,7 +86,7 @@ function ActionsCell<TData extends RowData>({ row, table }: CellContext<TData, u
 export function createActionsColumn<TData extends RowData>(): ColumnDef<TData, unknown> {
   return {
     id: ACTIONS_COLUMN_ID,
-    header: () => null,
+    header: ActionsHeader,
     cell: ActionsCell,
     size: 84,
     minSize: 84,

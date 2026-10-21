@@ -20,7 +20,7 @@ export function GridPagination<TData extends RowData>({ className, style }: Grid
   return (
     <Group justify="space-between" gap="xs" wrap="wrap" className={className} style={style}>
       <Group gap="xs" wrap="nowrap">
-        <Text size="xs" c="dimmed" component="label" htmlFor={undefined}>
+        <Text size="xs" className="mdg-muted" component="span" aria-hidden>
           {labels.rowsPerPage}
         </Text>
         <Select
@@ -33,7 +33,7 @@ export function GridPagination<TData extends RowData>({ className, style }: Grid
           onChange={(v) => v && table.setPagination({ pageIndex: 0, pageSize: Number(v) })}
           comboboxProps={{ withinPortal: true }}
         />
-        <Text size="xs" c="dimmed" aria-live="polite">
+        <Text size="xs" className="mdg-muted" aria-live="polite">
           {labels.pageInfo(from, to, total)}
         </Text>
         {props.loading && <Loader size="xs" aria-label={labels.loading} />}

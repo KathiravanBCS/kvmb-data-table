@@ -1,0 +1,27 @@
+.docs-prose p,
+.docs-prose li {
+  line-height: 1.65;
+}
+
+.docs-demo {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-md);
+  background: var(--mantine-color-body);
+}
+
+.docs-code {
+  position: relative;
+}
+
+.docs-code pre {
+  margin: 0;
+  max-height: 520px;
+  overflow: auto;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.docs-nav-link[data-active] {
+  font-weight: 600;
+}

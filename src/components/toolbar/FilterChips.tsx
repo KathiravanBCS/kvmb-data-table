@@ -38,10 +38,9 @@ export function FilterChips<TData extends RowData>() {
         );
       })}
       </Group>
-      <Button
+      <Button color="gray" c="var(--mantine-color-text)"
         size="compact-xs"
         variant="subtle"
-        color="gray"
         onClick={() => {
           setFilterModel(EMPTY_FILTER_MODEL);
           table.setGlobalFilter('');

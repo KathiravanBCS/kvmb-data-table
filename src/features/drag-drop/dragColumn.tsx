@@ -3,6 +3,11 @@ import { DRAG_COLUMN_ID } from '../../core/grid.constants';
 import { useDataGridContext } from '../../core/DataGridProvider';
 import { DragHandle } from './DragHandle';
 
+function DragHeader() {
+  const { labels } = useDataGridContext();
+  return <span className="mdg-sr-only">{labels.dragRow}</span>;
+}
+
 function DragCell<TData extends RowData>({ row }: CellContext<TData, unknown>) {
   const { labels } = useDataGridContext<TData>();
   if (row.getIsGrouped()) return null;
@@ -12,7 +17,7 @@ function DragCell<TData extends RowData>({ row }: CellContext<TData, unknown>) {
 export function createDragColumn<TData extends RowData>(): ColumnDef<TData, unknown> {
   return {
     id: DRAG_COLUMN_ID,
-    header: () => null,
+    header: DragHeader,
     cell: DragCell,
     size: 36,
     minSize: 36,

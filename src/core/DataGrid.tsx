@@ -221,10 +221,13 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
   const headerStyles = { header: s('header'), headerRow: s('headerRow'), headerCell: s('headerCell') };
 
   const gridAriaLabel = props['aria-label'];
+  // Grouped / hierarchical rows follow the treegrid pattern (aria-level, aria-expanded).
+  const tree = table.getState().grouping.length > 0 || !!props.getSubRows;
+  const interactive = features.selection || features.editing || features.keyboardNavigation;
   const tableElement = (
     <div
       ref={gridRef}
-      role={features.selection || features.editing || features.keyboardNavigation ? 'grid' : 'table'}
+      role={interactive ? (tree ? 'treegrid' : 'grid') : 'table'}
       aria-label={gridAriaLabel}
       aria-labelledby={props['aria-labelledby']}
       aria-rowcount={headerRowCount + totalRows + (showFooter ? 1 : 0)}
@@ -302,6 +305,7 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
           sortableRows={sortableRows}
           dragDisabled={ctx.rowDragDisabled || editing.active !== null}
           renderVersion={renderVersion}
+          tree={tree}
           registerScrollToIndex={registerScrollToIndex}
         />
       )}

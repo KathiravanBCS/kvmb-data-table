@@ -23,6 +23,11 @@ function SelectAllHeader<TData extends RowData>({ table }: HeaderContext<TData, 
   );
 }
 
+function SingleSelectHeader() {
+  const { labels } = useDataGridContext();
+  return <span className="mdg-sr-only">{labels.selectRow}</span>;
+}
+
 function SelectCell<TData extends RowData>({ row }: CellContext<TData, unknown>) {
   const { labels, props } = useDataGridContext<TData>();
   const single = props.selectionMode === 'single';
@@ -50,7 +55,7 @@ function SelectCell<TData extends RowData>({ row }: CellContext<TData, unknown>)
 export function createSelectColumn<TData extends RowData>(mode: 'single' | 'multiple'): ColumnDef<TData, unknown> {
   return {
     id: SELECT_COLUMN_ID,
-    header: mode === 'multiple' ? SelectAllHeader : () => null,
+    header: mode === 'multiple' ? SelectAllHeader : SingleSelectHeader,
     cell: SelectCell,
     size: 44,
     minSize: 44,

@@ -53,6 +53,8 @@ export interface GridRowProps<TData extends RowData> {
   dragDisabled: boolean;
   /** Bumped when consumer-provided rendering inputs (columns, renderers) change. */
   renderVersion: number;
+  /** Grid is a treegrid (grouping / sub rows): expose aria-level / aria-expanded. */
+  tree: boolean;
 }
 
 function RowInner<TData extends RowData>(props: GridRowProps<TData> & { dragBindings?: SortableBindings; setNodeRef?: (el: HTMLElement | null) => void; dragStyle?: CSSProperties }) {
@@ -75,8 +77,8 @@ function RowInner<TData extends RowData>(props: GridRowProps<TData> & { dragBind
       role="row"
       aria-rowindex={props.ariaRowIndex}
       aria-selected={row.getCanSelect() ? props.selected : undefined}
-      aria-expanded={isGroup || row.getCanExpand() ? props.expanded : undefined}
-      aria-level={row.depth + 1}
+      aria-expanded={props.tree && (isGroup || row.getCanExpand()) ? props.expanded : undefined}
+      aria-level={props.tree ? row.depth + 1 : undefined}
       data-index={props.dataIndex}
       data-row-id={row.id}
       data-selected={props.selected || undefined}
@@ -200,7 +202,8 @@ function areEqual<TData extends RowData>(prev: GridRowProps<TData>, next: GridRo
     prev.dataIndex === next.dataIndex &&
     prev.sortable === next.sortable &&
     prev.dragDisabled === next.dragDisabled &&
-    prev.renderVersion === next.renderVersion
+    prev.renderVersion === next.renderVersion &&
+    prev.tree === next.tree
   );
 }
 

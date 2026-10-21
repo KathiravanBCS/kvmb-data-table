@@ -14,8 +14,7 @@ export interface RemovableChipProps {
 export function RemovableChip({ children, removeLabel, onRemove }: RemovableChipProps) {
   return (
     <Badge
-      variant="light"
-      color="gray"
+      variant="default"
       size="lg"
       radius="xl"
       tt="none"

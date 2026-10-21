@@ -1,4 +1,5 @@
 import type { Column, RowData, Table } from '@tanstack/react-table';
+import type * as ExcelJSTypes from 'exceljs';
 import type { Workbook, Worksheet } from 'exceljs';
 import {
   downloadBlob,
@@ -63,7 +64,7 @@ export interface ExcelExportResult {
   rowCount: number;
 }
 
-type ExcelJSModule = typeof import('exceljs');
+type ExcelJSModule = typeof ExcelJSTypes;
 
 let excelJsPromise: Promise<ExcelJSModule> | null = null;
 

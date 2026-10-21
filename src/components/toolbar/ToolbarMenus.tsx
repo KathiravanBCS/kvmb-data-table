@@ -100,7 +100,7 @@ export function GroupingBar<TData extends RowData>() {
   if (!grouping.length) return null;
   return (
     <Group gap={6} className="mdg-grouping-bar" aria-label={labels.groupedBy}>
-      <Text size="xs" c="dimmed">
+      <Text size="xs" className="mdg-muted">
         {labels.groupedBy}
       </Text>
       {grouping.map((id) => {
@@ -112,10 +112,10 @@ export function GroupingBar<TData extends RowData>() {
           </RemovableChip>
         );
       })}
-      <Button size="compact-xs" variant="subtle" leftSection={<IconChevronsDown size={12} />} onClick={() => table.toggleAllRowsExpanded(true)}>
+      <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconChevronsDown size={12} />} onClick={() => table.toggleAllRowsExpanded(true)}>
         {labels.expandAll}
       </Button>
-      <Button size="compact-xs" variant="subtle" leftSection={<IconChevronsUp size={12} />} onClick={() => table.toggleAllRowsExpanded(false)}>
+      <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconChevronsUp size={12} />} onClick={() => table.toggleAllRowsExpanded(false)}>
         {labels.collapseAll}
       </Button>
     </Group>
@@ -138,16 +138,16 @@ export function SelectionBar<TData extends RowData>() {
         {labels.selectedCount(count)}
       </Text>
       {multi && pageAll && !allFiltered && !props.manualPagination && filteredCount > count && (
-        <Button size="compact-xs" variant="subtle" onClick={() => table.toggleAllRowsSelected(true)}>
+        <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => table.toggleAllRowsSelected(true)}>
           {labels.selectAllFiltered(filteredCount)}
         </Button>
       )}
       {multi && allFiltered && filteredCount > 1 && (
-        <Text size="xs" c="dimmed">
+        <Text size="xs" className="mdg-muted">
           {labels.allFilteredSelected(filteredCount)}
         </Text>
       )}
-      <Button size="compact-xs" variant="subtle" color="gray" onClick={() => api.clearSelection()}>
+      <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => api.clearSelection()}>
         {labels.clearSelection}
       </Button>
       {props.renderBulkActions?.({

@@ -23,7 +23,8 @@
   --dg-dirty-color: var(--mantine-color-yellow-filled);
   --dg-error-color: var(--mantine-color-error);
   --dg-text-color: var(--mantine-color-text);
-  --dg-dimmed-color: var(--mantine-color-dimmed);
+  /* Mantine's "dimmed" gray is below WCAG AA for small text; use a darker shade. */
+  --dg-dimmed-color: var(--mantine-color-gray-7);
   --dg-radius: var(--mantine-radius-default);
   --dg-font-size: var(--mantine-font-size-sm);
   --dg-header-font-weight: 600;
@@ -44,6 +45,7 @@
 
 [data-mantine-color-scheme='dark'] .mdg-root {
   --dg-header-bg: var(--mantine-color-dark-6);
+  --dg-dimmed-color: var(--mantine-color-dark-1);
   --dg-striped-bg: rgba(255, 255, 255, 0.025);
   --dg-pinned-shadow: rgba(0, 0, 0, 0.45);
 }
@@ -57,6 +59,15 @@
 .mdg-root[data-density='comfortable'] {
   --dg-cell-px: var(--mantine-spacing-md);
   --dg-cell-py: var(--mantine-spacing-xs);
+}
+
+/* Secondary text (also used inside portalled popovers, outside .mdg-root). */
+.mdg-muted {
+  color: var(--mantine-color-gray-7);
+}
+
+[data-mantine-color-scheme='dark'] .mdg-muted {
+  color: var(--mantine-color-dark-1);
 }
 
 /* ------------------------------------------------------------------ toolbar */
@@ -456,7 +467,14 @@
 }
 
 .mdg-header-drag-handle {
-  margin-inline-start: calc(var(--dg-cell-px) * -0.5);
+  /* Sits inside the cell padding so header labels stay aligned with cell content. */
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--dg-cell-px);
+  min-width: 10px;
+  padding: 0;
   opacity: 0;
 }
 

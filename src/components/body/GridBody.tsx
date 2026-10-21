@@ -33,6 +33,7 @@ export interface GridBodyProps<TData extends RowData> {
   sortableRows: boolean;
   dragDisabled: boolean;
   renderVersion: number;
+  tree: boolean;
   /** Receives a function that scrolls a row index into view. */
   registerScrollToIndex: (fn: (index: number) => void) => void;
 }
@@ -65,6 +66,7 @@ function useRowProps<TData extends RowData>(props: GridBodyProps<TData>) {
       sortable: props.sortableRows,
       dragDisabled: props.dragDisabled,
       renderVersion: props.renderVersion,
+      tree: props.tree,
       ...extra,
     };
   };
