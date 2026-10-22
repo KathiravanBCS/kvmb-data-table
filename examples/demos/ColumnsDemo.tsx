@@ -15,8 +15,12 @@ const columns: ColumnDef<Employee>[] = [
       <Group gap="xs" wrap="nowrap">
         <Avatar size="sm" radius="xl" color="initials" name={getValue<string>()} />
         <div style={{ minWidth: 0 }}>
-          <Text size="sm" truncate>{getValue<string>()}</Text>
-          <Anchor size="xs" href={`mailto:${row.original.email}`} truncate>{row.original.email}</Anchor>
+          <Text size="sm" truncate>
+            {getValue<string>()}
+          </Text>
+          <Anchor size="xs" href={`mailto:${row.original.email}`} truncate>
+            {row.original.email}
+          </Anchor>
         </div>
       </Group>
     ),
@@ -25,12 +29,17 @@ const columns: ColumnDef<Employee>[] = [
   { accessorKey: 'location.country', header: 'Country' },
   {
     accessorKey: 'salary',
-    header: () => <Text fw={700} c="teal" size="sm">Salary (USD)</Text>,
+    header: () => (
+      <Text fw={700} c="teal" size="sm">
+        Salary (USD)
+      </Text>
+    ),
     meta: {
       align: 'right',
       format: (v) => currency.format(v as number),
       // Conditional cell styling
-      cellStyle: (cell) => ((cell.getValue() as number) > 170000 ? { color: 'var(--mantine-color-teal-filled)', fontWeight: 600 } : undefined),
+      cellStyle: (cell) =>
+        (cell.getValue() as number) > 170000 ? { color: 'var(--mantine-color-teal-filled)', fontWeight: 600 } : undefined,
     },
   },
   {

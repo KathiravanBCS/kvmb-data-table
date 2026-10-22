@@ -15,8 +15,5 @@ export default defineConfig({
       include: ['tests/types/**/*.test-d.ts{,x}'],
       tsconfig: './tsconfig.json',
     },
-    benchmark: {
-      include: ['tests/bench/**/*.bench.{ts,tsx}'],
-    },
   },
 });

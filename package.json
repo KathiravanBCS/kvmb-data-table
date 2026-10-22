@@ -83,13 +83,15 @@
     "playground": "vite --config docs/vite.config.ts",
     "docs:dev": "vite --config docs/vite.config.ts",
     "docs:build": "vite build --config docs/vite.config.ts",
-    "bench": "vitest bench --run",
-    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+    "bench": "vitest run --config tests/bench/vitest.config.ts --reporter=verbose",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "peerDependencies": {
-    "@mantine/core": ">=8.3.0 <9",
-    "@mantine/dates": ">=8.3.0 <9",
-    "@mantine/hooks": ">=8.3.0 <9",
+    "@mantine/core": ">=8.3.0 <10",
+    "@mantine/dates": ">=8.3.0 <10",
+    "@mantine/hooks": ">=8.3.0 <10",
     "dayjs": ">=1.11.0",
     "exceljs": "^4.4.0",
     "react": "^19.0.0",
@@ -138,6 +140,7 @@
     "postcss": "^8.5.6",
     "postcss-import": "^17.0.1",
     "postcss-preset-env": "^11.6.1",
+    "prettier": "^3.9.10",
     "publint": "^0.3.25",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

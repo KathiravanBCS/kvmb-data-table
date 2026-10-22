@@ -1,30 +1,10 @@
 import { useMemo, useState } from 'react';
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Menu,
-  SegmentedControl,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { ActionIcon, Box, Button, Group, Menu, SegmentedControl, Select, Stack, Text, TextInput } from '@mantine/core';
 import { IconBookmark, IconPlus, IconTrash, IconX } from '@tabler/icons-react';
 import type { Column, RowData, Table } from '@tanstack/react-table';
 import type { DataGridLabels } from '../../core/grid.defaults';
-import type {
-  FilterCondition,
-  FilterGroup,
-  FilterNode,
-  FilterPreset,
-} from '../../features/filtering/filter.types';
-import {
-  defaultOperatorByVariant,
-  getOperatorsForVariant,
-  type FilterOperatorRegistry,
-} from '../../features/filtering/filter.operators';
+import type { FilterCondition, FilterGroup, FilterNode, FilterPreset } from '../../features/filtering/filter.types';
+import { defaultOperatorByVariant, getOperatorsForVariant, type FilterOperatorRegistry } from '../../features/filtering/filter.operators';
 import {
   addFilterNode,
   createFilterCondition,
@@ -51,9 +31,7 @@ export interface FilterBuilderProps<TData extends RowData> {
 }
 
 export function getFilterableColumns<TData extends RowData>(table: Table<TData>): Column<TData, unknown>[] {
-  return table
-    .getAllLeafColumns()
-    .filter((c) => !!c.accessorFn && c.columnDef.enableColumnFilter !== false && !c.id.startsWith('__dg_'));
+  return table.getAllLeafColumns().filter((c) => !!c.accessorFn && c.columnDef.enableColumnFilter !== false && !c.id.startsWith('__dg_'));
 }
 
 interface NodeEditorProps<TData extends RowData> extends Omit<FilterBuilderProps<TData>, 'value' | 'onChange'> {
@@ -163,7 +141,13 @@ function GroupEditor<TData extends RowData>(props: NodeEditorProps<TData> & { gr
     onRootChange(addFilterNode(root, group.id, child));
   };
   return (
-    <Stack gap={6} className="mdg-filter-group" data-depth={depth} role="group" aria-label={group.logic === 'and' ? labels.filterMatchAll : labels.filterMatchAny}>
+    <Stack
+      gap={6}
+      className="mdg-filter-group"
+      data-depth={depth}
+      role="group"
+      aria-label={group.logic === 'and' ? labels.filterMatchAll : labels.filterMatchAny}
+    >
       <Group gap="xs" justify="space-between" wrap="nowrap">
         <SegmentedControl
           size="xs"
@@ -172,10 +156,17 @@ function GroupEditor<TData extends RowData>(props: NodeEditorProps<TData> & { gr
             { value: 'and', label: labels.filterMatchAll },
             { value: 'or', label: labels.filterMatchAny },
           ]}
-          onChange={(logic) => onRootChange(updateFilterNode(root, group.id, (n) => ({ ...(n as FilterGroup), logic: logic as FilterGroup['logic'] })))}
+          onChange={(logic) =>
+            onRootChange(updateFilterNode(root, group.id, (n) => ({ ...(n as FilterGroup), logic: logic as FilterGroup['logic'] })))
+          }
         />
         {depth > 0 && (
-          <ActionIcon variant="subtle" color="gray" aria-label={labels.removeFilter} onClick={() => onRootChange(removeFilterNode(root, group.id))}>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            aria-label={labels.removeFilter}
+            onClick={() => onRootChange(removeFilterNode(root, group.id))}
+          >
             <IconTrash size={14} />
           </ActionIcon>
         )}
@@ -190,11 +181,27 @@ function GroupEditor<TData extends RowData>(props: NodeEditorProps<TData> & { gr
         ),
       )}
       <Group gap="xs">
-        <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="light" leftSection={<IconPlus size={12} />} onClick={addCondition} disabled={!firstColumn}>
+        <Button
+          color="gray"
+          c="var(--mantine-color-text)"
+          size="compact-xs"
+          variant="light"
+          leftSection={<IconPlus size={12} />}
+          onClick={addCondition}
+          disabled={!firstColumn}
+        >
           {labels.addFilter}
         </Button>
         {depth + 1 < maxDepth && (
-          <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconPlus size={12} />} onClick={addGroup} disabled={!firstColumn}>
+          <Button
+            color="gray"
+            c="var(--mantine-color-text)"
+            size="compact-xs"
+            variant="subtle"
+            leftSection={<IconPlus size={12} />}
+            onClick={addGroup}
+            disabled={!firstColumn}
+          >
             {labels.addGroup}
           </Button>
         )}
@@ -207,7 +214,15 @@ function GroupEditor<TData extends RowData>(props: NodeEditorProps<TData> & { gr
  * Visual AND/OR filter builder bound to a {@link FilterGroup}. Fully controlled:
  * every edit calls `onChange` with a new immutable model.
  */
-export function FilterBuilder<TData extends RowData>({ table, value, onChange, registry, labels, maxDepth, withinPortal = true }: FilterBuilderProps<TData>) {
+export function FilterBuilder<TData extends RowData>({
+  table,
+  value,
+  onChange,
+  registry,
+  labels,
+  maxDepth,
+  withinPortal = true,
+}: FilterBuilderProps<TData>) {
   const columns = getFilterableColumns(table);
   return (
     <GroupEditor

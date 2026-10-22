@@ -1,11 +1,4 @@
-import type {
-  FilterCondition,
-  FilterGroup,
-  FilterLogic,
-  FilterNode,
-  FilterOperator,
-  FilterValue,
-} from './filter.types';
+import type { FilterCondition, FilterGroup, FilterLogic, FilterNode, FilterOperator, FilterValue } from './filter.types';
 import { isEmptyValue, operatorNeedsValue, type FilterOperatorRegistry } from './filter.operators';
 
 let idCounter = 0;
@@ -20,11 +13,7 @@ export function createFilterGroup(logic: FilterLogic = 'and', children: FilterNo
   return { type: 'group', id: createFilterId('g'), logic, children };
 }
 
-export function createFilterCondition(
-  field: string,
-  operator: FilterOperator,
-  value?: FilterValue,
-): FilterCondition {
+export function createFilterCondition(field: string, operator: FilterOperator, value?: FilterValue): FilterCondition {
   return { type: 'condition', id: createFilterId('c'), field, operator, value };
 }
 
@@ -59,10 +48,7 @@ export function isConditionActive(condition: FilterCondition, registry: FilterOp
   return !isEmptyValue(v);
 }
 
-export function getActiveConditions(
-  model: FilterGroup | null | undefined,
-  registry: FilterOperatorRegistry,
-): FilterCondition[] {
+export function getActiveConditions(model: FilterGroup | null | undefined, registry: FilterOperatorRegistry): FilterCondition[] {
   return flattenConditions(model).filter((c) => isConditionActive(c, registry));
 }
 
@@ -81,11 +67,7 @@ export function pruneFilterModel(node: FilterGroup, registry: FilterOperatorRegi
 }
 
 /** Immutable update of the node with `id`. Returns the original tree when not found. */
-export function updateFilterNode(
-  root: FilterGroup,
-  id: string,
-  updater: (node: FilterNode) => FilterNode | null,
-): FilterGroup {
+export function updateFilterNode(root: FilterGroup, id: string, updater: (node: FilterNode) => FilterNode | null): FilterGroup {
   if (root.id === id) {
     const next = updater(root);
     return next && next.type === 'group' ? next : { ...root, children: [] };
@@ -122,9 +104,7 @@ export function addFilterNode(root: FilterGroup, parentId: string, node: FilterN
 export function removeConditionsForField(root: FilterGroup, field: string): FilterGroup {
   const strip = (group: FilterGroup): FilterGroup => ({
     ...group,
-    children: group.children
-      .filter((c) => !(c.type === 'condition' && c.field === field))
-      .map((c) => (c.type === 'group' ? strip(c) : c)),
+    children: group.children.filter((c) => !(c.type === 'condition' && c.field === field)).map((c) => (c.type === 'group' ? strip(c) : c)),
   });
   return strip(root);
 }
@@ -188,7 +168,5 @@ export function applyFilterModel<T>(
 ): T[] {
   const pruned = model ? pruneFilterModel(model, registry) : null;
   if (!pruned) return [...rows];
-  return rows.filter((row) =>
-    evaluateFilterNode(pruned, { registry, original: row, getValue: (field) => getFieldValue(row, field) }),
-  );
+  return rows.filter((row) => evaluateFilterNode(pruned, { registry, original: row, getValue: (field) => getFieldValue(row, field) }));
 }

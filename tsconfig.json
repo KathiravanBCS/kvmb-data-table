@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
@@ -23,27 +19,12 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
-    "types": [
-      "node",
-      "vitest/globals",
-      "@testing-library/jest-dom"
-    ],
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
     "noEmit": true,
     "paths": {
-      "@kvmb/react-data-grid": [
-        "./src/index.ts"
-      ],
-      "@kvmb/react-data-grid/export": [
-        "./src/export/index.ts"
-      ]
+      "@kvmb/react-data-grid": ["./src/index.ts"],
+      "@kvmb/react-data-grid/export": ["./src/export/index.ts"]
     }
   },
-  "include": [
-    "src",
-    "tests",
-    "examples",
-    "docs/src",
-    "*.ts",
-    "*.mts"
-  ]
+  "include": ["src", "tests", "examples", "docs/src", "*.ts", "*.mts"]
 }

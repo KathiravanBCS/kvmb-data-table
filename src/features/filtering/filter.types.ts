@@ -9,22 +9,9 @@
 /** Value editors / operator sets available for a column. */
 export type FilterVariant = 'text' | 'number' | 'date' | 'boolean' | 'select' | 'multiSelect';
 
-export type TextFilterOperator =
-  | 'contains'
-  | 'notContains'
-  | 'equals'
-  | 'notEquals'
-  | 'startsWith'
-  | 'endsWith';
+export type TextFilterOperator = 'contains' | 'notContains' | 'equals' | 'notEquals' | 'startsWith' | 'endsWith';
 
-export type NumberFilterOperator =
-  | 'eq'
-  | 'neq'
-  | 'gt'
-  | 'gte'
-  | 'lt'
-  | 'lte'
-  | 'between';
+export type NumberFilterOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'between';
 
 export type DateFilterOperator = 'on' | 'notOn' | 'before' | 'after' | 'onOrBefore' | 'onOrAfter' | 'dateBetween';
 
@@ -35,12 +22,7 @@ export type SetFilterOperator = 'in' | 'notIn';
 export type NullFilterOperator = 'isEmpty' | 'isNotEmpty';
 
 export type BuiltInFilterOperator =
-  | TextFilterOperator
-  | NumberFilterOperator
-  | DateFilterOperator
-  | BooleanFilterOperator
-  | SetFilterOperator
-  | NullFilterOperator;
+  TextFilterOperator | NumberFilterOperator | DateFilterOperator | BooleanFilterOperator | SetFilterOperator | NullFilterOperator;
 
 /**
  * Operator identifier. Built-in operators are listed in {@link BuiltInFilterOperator};
@@ -49,12 +31,7 @@ export type BuiltInFilterOperator =
 export type FilterOperator = BuiltInFilterOperator | (string & {});
 
 /** JSON-serializable value carried by a filter condition. */
-export type FilterValue =
-  | string
-  | number
-  | boolean
-  | null
-  | ReadonlyArray<string | number | boolean | null>;
+export type FilterValue = string | number | boolean | null | ReadonlyArray<string | number | boolean | null>;
 
 export interface FilterCondition {
   type: 'condition';

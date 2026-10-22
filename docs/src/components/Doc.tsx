@@ -35,7 +35,13 @@ export function CodeBlock({ code, language = 'tsx' }: { code: string; language?:
       <CopyButton value={code.trim()}>
         {({ copied, copy }) => (
           <Tooltip label={copied ? 'Copied' : 'Copy'} withinPortal>
-            <ActionIcon variant="default" size="sm" onClick={copy} aria-label="Copy code" style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}>
+            <ActionIcon
+              variant="default"
+              size="sm"
+              onClick={copy}
+              aria-label="Copy code"
+              style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+            >
               {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
             </ActionIcon>
           </Tooltip>

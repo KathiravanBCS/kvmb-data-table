@@ -6,7 +6,17 @@ import { generateEmployees } from '../data';
 const data = generateEmployees(120);
 const persist = {
   key: 'docs-persistence-demo',
-  include: ['sorting', 'filterModel', 'columnVisibility', 'columnOrder', 'columnSizing', 'columnPinning', 'density', 'filterPresets', 'pagination'] as const,
+  include: [
+    'sorting',
+    'filterModel',
+    'columnVisibility',
+    'columnOrder',
+    'columnSizing',
+    'columnPinning',
+    'density',
+    'filterPresets',
+    'pagination',
+  ] as const,
 };
 
 export default function PersistenceDemo() {
@@ -27,7 +37,15 @@ export default function PersistenceDemo() {
         defaultPagination={{ pageSize: 10 }}
         aria-label="Persisted employees grid"
       />
-      <Button size="xs" variant="subtle" w="fit-content" onClick={() => { clearPersistedState(persist); window.location.reload(); }}>
+      <Button
+        size="xs"
+        variant="subtle"
+        w="fit-content"
+        onClick={() => {
+          clearPersistedState(persist);
+          window.location.reload();
+        }}
+      >
         Clear saved state
       </Button>
     </Stack>

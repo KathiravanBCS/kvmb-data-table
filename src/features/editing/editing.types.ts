@@ -12,10 +12,7 @@ export type BuiltInEditor = 'text' | 'number' | 'select' | 'multiSelect' | 'chec
 /** Result of a validator: an error message, or `null`/`undefined`/`true` when valid. */
 export type ValidationResult = string | null | undefined | true;
 
-export type CellValidator<TData, TValue = unknown> = (
-  value: TValue,
-  row: TData,
-) => ValidationResult | Promise<ValidationResult>;
+export type CellValidator<TData, TValue = unknown> = (value: TValue, row: TData) => ValidationResult | Promise<ValidationResult>;
 
 /** Props received by every cell editor (built-in or custom). */
 export interface CellEditorProps<TData, TValue = unknown> {
@@ -55,10 +52,7 @@ export interface RowUpdateContext<TData> {
  * Persists an edited row. Return (or resolve) nothing to accept `updatedRow` as-is,
  * or return the server's canonical row. Throw / reject to roll back.
  */
-export type RowUpdateHandler<TData> = (
-  updatedRow: TData,
-  context: RowUpdateContext<TData>,
-) => void | TData | Promise<void | TData>;
+export type RowUpdateHandler<TData> = (updatedRow: TData, context: RowUpdateContext<TData>) => void | TData | Promise<void | TData>;
 
 export type RowValidator<TData> = (
   row: TData,

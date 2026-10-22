@@ -11,10 +11,7 @@ export function getColumnFilterVariant<TData extends RowData>(column: Column<TDa
  * Options for select-like filters: `meta.filterOptions` when configured, otherwise
  * the distinct values present in the loaded (pre-filter) rows, capped at 500.
  */
-export function getColumnFilterOptions<TData extends RowData>(
-  table: Table<TData>,
-  column: Column<TData, unknown>,
-): FilterOption[] {
+export function getColumnFilterOptions<TData extends RowData>(table: Table<TData>, column: Column<TData, unknown>): FilterOption[] {
   const configured = column.columnDef.meta?.filterOptions ?? column.columnDef.meta?.editorOptions;
   if (configured) return [...configured];
   if (!column.accessorFn) return [];

@@ -23,7 +23,12 @@ export function DataGridToolbar<TData extends RowData>({ className, style }: Dat
     );
   }
   return (
-    <div className={className} style={style} role="toolbar" aria-label={props['aria-label'] ? `${props['aria-label']} toolbar` : 'Grid toolbar'}>
+    <div
+      className={className}
+      style={style}
+      role="toolbar"
+      aria-label={props['aria-label'] ? `${props['aria-label']} toolbar` : 'Grid toolbar'}
+    >
       <Group justify="space-between" gap="xs" wrap="wrap">
         <Group gap="xs" wrap="wrap">
           {features.globalFilter && <GlobalSearch<TData> />}

@@ -12,7 +12,11 @@ const cell = (container: HTMLElement, rowIndex: number, columnId: string) =>
 const columns: ColumnDef<Employee>[] = [
   { accessorKey: 'name', header: 'Name', meta: { validate: (v) => (String(v).trim() ? null : 'Name is required') } },
   { accessorKey: 'department', header: 'Department', meta: { editable: false } },
-  { accessorKey: 'salary', header: 'Salary', meta: { filterVariant: 'number', validate: async (v) => ((v as number) < 0 ? 'Must be positive' : null) } },
+  {
+    accessorKey: 'salary',
+    header: 'Salary',
+    meta: { filterVariant: 'number', validate: async (v) => ((v as number) < 0 ? 'Must be positive' : null) },
+  },
   { accessorKey: 'address.city', header: 'City' },
   { accessorKey: 'active', header: 'Active', meta: { filterVariant: 'boolean' } },
 ];
@@ -80,7 +84,9 @@ describe('cell editing', () => {
     const onError = vi.fn();
     let reject!: (e: Error) => void;
     const onRowUpdate = vi.fn((_row: Employee) => new Promise<void>((_, r) => (reject = r)));
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} enableEditing onRowUpdate={onRowUpdate} onEditError={onError} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={columns} enableEditing onRowUpdate={onRowUpdate} onEditError={onError} />,
+    );
     await user.dblClick(cell(container, 0, 'address_city'));
     const input = screen.getByRole('textbox', { name: 'City' });
     await user.clear(input);
@@ -99,7 +105,9 @@ describe('cell editing', () => {
     const user = userEvent.setup();
     let resolve!: (row: Employee) => void;
     const onRowUpdate = vi.fn((_row: Employee) => new Promise<Employee>((r) => (resolve = r)));
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} enableEditing optimisticUpdates={false} onRowUpdate={onRowUpdate} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={columns} enableEditing optimisticUpdates={false} onRowUpdate={onRowUpdate} />,
+    );
     await user.dblClick(cell(container, 0, 'name'));
     const input = screen.getByRole('textbox', { name: 'Name' });
     await user.clear(input);
@@ -169,13 +177,24 @@ describe('cell editing', () => {
     const onRowUpdate = vi.fn();
     function Stepper({ value, onChange, onCommit }: CellEditorProps<Employee, unknown>) {
       return (
-        <button type="button" onClick={() => { onChange((value as number) + 1); }} onDoubleClick={onCommit}>
+        <button
+          type="button"
+          onClick={() => {
+            onChange((value as number) + 1);
+          }}
+          onDoubleClick={onCommit}
+        >
           step {String(value)}
         </button>
       );
     }
     const { container } = renderWithMantine(
-      <DataGrid data={employees} columns={[{ accessorKey: 'salary', header: 'Salary', meta: { editor: Stepper } }]} enableEditing onRowUpdate={onRowUpdate} />,
+      <DataGrid
+        data={employees}
+        columns={[{ accessorKey: 'salary', header: 'Salary', meta: { editor: Stepper } }]}
+        enableEditing
+        onRowUpdate={onRowUpdate}
+      />,
     );
     await user.dblClick(cell(container, 0, 'salary'));
     await user.click(screen.getByRole('button', { name: 'step 120000' }));
@@ -191,7 +210,12 @@ describe('cell editing', () => {
         data={employees}
         columns={[
           { id: 'upper', header: 'Upper', accessorFn: (r) => r.name.toUpperCase() },
-          { id: 'lower', header: 'Lower', accessorFn: (r) => r.name.toLowerCase(), meta: { setValue: (row, v) => ({ ...row, name: String(v) }) } },
+          {
+            id: 'lower',
+            header: 'Lower',
+            accessorFn: (r) => r.name.toLowerCase(),
+            meta: { setValue: (row, v) => ({ ...row, name: String(v) }) },
+          },
         ]}
         enableEditing
         onRowUpdate={onRowUpdate}

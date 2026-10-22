@@ -5,7 +5,17 @@ import type { DataGridLabels } from '../../core/grid.defaults';
 import type { ColumnLayoutItem } from '../../features/pinning/pinning';
 import { getCellLayoutStyle } from '../../features/pinning/pinning';
 
-export function EmptyState({ filtered, labels, className, style }: { filtered: boolean; labels: DataGridLabels; className: string; style?: CSSProperties }) {
+export function EmptyState({
+  filtered,
+  labels,
+  className,
+  style,
+}: {
+  filtered: boolean;
+  labels: DataGridLabels;
+  className: string;
+  style?: CSSProperties;
+}) {
   return (
     <div className={className} style={style} role="row">
       <div role="gridcell" className="mdg-state-cell">
@@ -70,7 +80,13 @@ export function SkeletonRows({
       {Array.from({ length: count }, (_, r) => (
         <div key={r} role="row" className={rowClassName} aria-hidden data-skeleton="">
           {layout.map((item) => (
-            <div key={item.id} role="gridcell" className={cellClassName} style={getCellLayoutStyle(item, fill)} data-pinned={item.pinned || undefined}>
+            <div
+              key={item.id}
+              role="gridcell"
+              className={cellClassName}
+              style={getCellLayoutStyle(item, fill)}
+              data-pinned={item.pinned || undefined}
+            >
               <Skeleton height={10} radius="sm" width={`${50 + ((r * 7 + item.size) % 40)}%`} />
             </div>
           ))}

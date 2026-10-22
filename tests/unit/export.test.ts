@@ -83,7 +83,12 @@ describe('CSV', () => {
 
   it('exports selected rows, all rows and the current page', () => {
     const { result } = renderHook(() => useTable({ rowSelection: { '2': true, '4': true } }));
-    expect(exportToCsv(result.current, { download: false, rows: 'selected' }).csv.split('\r\n').slice(1).map((l) => l.split(',')[0])).toEqual(['Bob', 'Dan']);
+    expect(
+      exportToCsv(result.current, { download: false, rows: 'selected' })
+        .csv.split('\r\n')
+        .slice(1)
+        .map((l) => l.split(',')[0]),
+    ).toEqual(['Bob', 'Dan']);
     expect(exportToCsv(result.current, { download: false, rows: 'all' }).rowCount).toBe(5);
     expect(exportToCsv(result.current, { download: false, rows: 'page' }).rowCount).toBe(2);
   });
@@ -135,7 +140,14 @@ describe('Excel', () => {
       sheets: [
         { name: 'All', rows: 'all' },
         { name: 'Selected', rows: 'selected' },
-        { name: 'Summary', columns: [{ key: 'k', header: 'Key' }, { key: 'v', header: 'Value', numberFormat: '0.00' }], data: [{ k: 'total', v: 5 }] },
+        {
+          name: 'Summary',
+          columns: [
+            { key: 'k', header: 'Key' },
+            { key: 'v', header: 'Value', numberFormat: '0.00' },
+          ],
+          data: [{ k: 'total', v: 5 }],
+        },
       ],
     });
     expect(filename).toBe('report.xlsx');

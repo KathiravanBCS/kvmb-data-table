@@ -99,7 +99,10 @@ test('rows can be reordered with the keyboard and the pointer', async ({ page })
 
 test('columns can be reordered by dragging the header handle', async ({ page }) => {
   await openPage(page, 'drag-and-drop');
-  const headerIds = () => grid(page).locator('[role="columnheader"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-column-id')));
+  const headerIds = () =>
+    grid(page)
+      .locator('[role="columnheader"]')
+      .evaluateAll((els) => els.map((e) => e.getAttribute('data-column-id')));
   const before = await headerIds();
   const emailHeader = grid(page).locator('[role="columnheader"][data-column-id="email"]');
   await emailHeader.hover();
@@ -121,7 +124,10 @@ test('CSV and Excel exports download files (ExcelJS loaded lazily)', async ({ pa
   page.on('request', (r) => {
     if (/exceljs/i.test(r.url())) excelRequests.push(r.url());
   });
-  const [csv] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: 'CSV (filtered, visible columns)' }).click()]);
+  const [csv] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'CSV (filtered, visible columns)' }).click(),
+  ]);
   expect(csv.suggestedFilename()).toBe('employees.csv');
   const text = await (await csv.createReadStream()).toArray();
   expect(Buffer.concat(text).toString('utf8')).toContain('Name,Email,Department');

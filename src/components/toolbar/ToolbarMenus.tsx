@@ -70,7 +70,13 @@ export function ExportMenu<TData extends RowData>() {
   return (
     <Menu position="bottom-end" withinPortal>
       <Menu.Target>
-        <Button size="xs" variant="default" leftSection={<IconDownload size={14} />} loading={busy} aria-label={busy ? labels.exporting : labels.export}>
+        <Button
+          size="xs"
+          variant="default"
+          leftSection={<IconDownload size={14} />}
+          loading={busy}
+          aria-label={busy ? labels.exporting : labels.export}
+        >
           {labels.export}
         </Button>
       </Menu.Target>
@@ -78,7 +84,11 @@ export function ExportMenu<TData extends RowData>() {
         <Menu.Item leftSection={<IconFileTypeCsv size={16} />} onClick={() => exportToCsv(table, { rows: 'filtered', filename })}>
           {labels.exportCsvFiltered}
         </Menu.Item>
-        <Menu.Item leftSection={<IconFileTypeCsv size={16} />} disabled={!selectedCount} onClick={() => exportToCsv(table, { rows: 'selected', filename })}>
+        <Menu.Item
+          leftSection={<IconFileTypeCsv size={16} />}
+          disabled={!selectedCount}
+          onClick={() => exportToCsv(table, { rows: 'selected', filename })}
+        >
           {labels.exportCsvSelected}
         </Menu.Item>
         <Menu.Divider />
@@ -112,10 +122,24 @@ export function GroupingBar<TData extends RowData>() {
           </RemovableChip>
         );
       })}
-      <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconChevronsDown size={12} />} onClick={() => table.toggleAllRowsExpanded(true)}>
+      <Button
+        color="gray"
+        c="var(--mantine-color-text)"
+        size="compact-xs"
+        variant="subtle"
+        leftSection={<IconChevronsDown size={12} />}
+        onClick={() => table.toggleAllRowsExpanded(true)}
+      >
         {labels.expandAll}
       </Button>
-      <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" leftSection={<IconChevronsUp size={12} />} onClick={() => table.toggleAllRowsExpanded(false)}>
+      <Button
+        color="gray"
+        c="var(--mantine-color-text)"
+        size="compact-xs"
+        variant="subtle"
+        leftSection={<IconChevronsUp size={12} />}
+        onClick={() => table.toggleAllRowsExpanded(false)}
+      >
         {labels.collapseAll}
       </Button>
     </Group>
@@ -138,7 +162,13 @@ export function SelectionBar<TData extends RowData>() {
         {labels.selectedCount(count)}
       </Text>
       {multi && pageAll && !allFiltered && !props.manualPagination && filteredCount > count && (
-        <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => table.toggleAllRowsSelected(true)}>
+        <Button
+          color="gray"
+          c="var(--mantine-color-text)"
+          size="compact-xs"
+          variant="subtle"
+          onClick={() => table.toggleAllRowsSelected(true)}
+        >
           {labels.selectAllFiltered(filteredCount)}
         </Button>
       )}

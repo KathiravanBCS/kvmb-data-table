@@ -138,16 +138,40 @@ import { App } from './App';
 createRoot(document.getElementById('root')!).render(<App />);
 `,
   );
-  writeFileSync(join(app, 'index.html'), '<!doctype html><html><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>');
-  writeFileSync(join(app, 'vite.config.ts'), `import { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\nexport default defineConfig({ plugins: [react()] });\n`);
+  writeFileSync(
+    join(app, 'index.html'),
+    '<!doctype html><html><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>',
+  );
+  writeFileSync(
+    join(app, 'vite.config.ts'),
+    `import { defineConfig } from 'vite';\nimport react from '@vitejs/plugin-react';\nexport default defineConfig({ plugins: [react()] });\n`,
+  );
   // vite/client declares `*.css` side-effect imports (checked by TypeScript 6 by default).
-  const tsBase = { target: 'ES2022', lib: ['ESNext', 'DOM'], jsx: 'react-jsx', strict: true, noEmit: true, skipLibCheck: false, types: ['node', 'vite/client'] };
-  writeFileSync(join(app, 'tsconfig.json'), JSON.stringify({ compilerOptions: { ...tsBase, module: 'ESNext', moduleResolution: 'Bundler' }, include: ['src'] }, null, 2));
+  const tsBase = {
+    target: 'ES2022',
+    lib: ['ESNext', 'DOM'],
+    jsx: 'react-jsx',
+    strict: true,
+    noEmit: true,
+    skipLibCheck: false,
+    types: ['node', 'vite/client'],
+  };
+  writeFileSync(
+    join(app, 'tsconfig.json'),
+    JSON.stringify({ compilerOptions: { ...tsBase, module: 'ESNext', moduleResolution: 'Bundler' }, include: ['src'] }, null, 2),
+  );
   // node16 resolution exercises the `exports` map conditions; skipLibCheck stays off for our .d.ts but
   // third-party declarations are not ours to vouch for, so they are checked only in the bundler config.
   writeFileSync(
     join(app, 'tsconfig.node16.json'),
-    JSON.stringify({ compilerOptions: { ...tsBase, module: 'Node16', moduleResolution: 'Node16', skipLibCheck: true }, files: ['types-esm.mts', 'types-cjs.cts'] }, null, 2),
+    JSON.stringify(
+      {
+        compilerOptions: { ...tsBase, module: 'Node16', moduleResolution: 'Node16', skipLibCheck: true },
+        files: ['types-esm.mts', 'types-cjs.cts'],
+      },
+      null,
+      2,
+    ),
   );
   writeFileSync(
     join(app, 'types-esm.mts'),
@@ -164,15 +188,19 @@ export const checks = [grid.DataGrid, grid.applyFilterModel, exporter.exportToCs
 `,
   );
 
-  const ssr = (format) => `${format === 'esm' ? `import { createElement as h } from 'react';
+  const ssr = (format) => `${
+    format === 'esm'
+      ? `import { createElement as h } from 'react';
 import { renderToString } from 'react-dom/server';
 import { MantineProvider } from '@mantine/core';
 import * as grid from '${pkg.name}';
-import * as exporter from '${pkg.name}/export';` : `const { createElement: h } = require('react');
+import * as exporter from '${pkg.name}/export';`
+      : `const { createElement: h } = require('react');
 const { renderToString } = require('react-dom/server');
 const { MantineProvider } = require('@mantine/core');
 const grid = require('${pkg.name}');
-const exporter = require('${pkg.name}/export');`}
+const exporter = require('${pkg.name}/export');`
+  }
 const data = [{ id: '1', name: 'Ada', salary: 10 }, { id: '2', name: 'Grace', salary: 20 }];
 const columns = [{ accessorKey: 'name', header: 'Name' }, { accessorKey: 'salary', header: 'Salary' }];
 const html = renderToString(h(MantineProvider, null, h(grid.DataGrid, { data, columns, enableFiltering: true, enableRowSelection: true, enablePagination: true, 'aria-label': 'People' })));
@@ -200,7 +228,10 @@ console.log('${format.toUpperCase()} SSR ok (' + html.length + ' chars)');
   step('vite production build (ESM + CSS)');
   run('npx vite build --logLevel warn', app);
   const assets = readdirSync(join(app, 'dist/assets'));
-  const css = assets.filter((f) => f.endsWith('.css')).map((f) => readFileSync(join(app, 'dist/assets', f), 'utf8')).join('');
+  const css = assets
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => readFileSync(join(app, 'dist/assets', f), 'utf8'))
+    .join('');
   if (!css.includes('.mdg-root')) throw new Error('Grid CSS was not bundled');
   const entry = readFileSync(join(app, 'dist/index.html'), 'utf8').match(/assets\/(index-[^"]+\.js)/)?.[1];
   const entryCode = readFileSync(join(app, 'dist/assets', entry), 'utf8');

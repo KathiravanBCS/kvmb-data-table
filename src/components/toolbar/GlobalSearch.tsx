@@ -50,15 +50,7 @@ export function GlobalSearch<TData extends RowData>() {
           clear();
         }
       }}
-      rightSection={
-        value ? (
-          <CloseButton
-            size="xs"
-            aria-label={labels.clearSearch}
-            onClick={clear}
-          />
-        ) : null
-      }
+      rightSection={value ? <CloseButton size="xs" aria-label={labels.clearSearch} onClick={clear} /> : null}
     />
   );
 }

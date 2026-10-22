@@ -1,13 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Row, RowData, Table } from '@tanstack/react-table';
-import type {
-  EditMode,
-  RowEditState,
-  RowSaveState,
-  RowUpdateHandler,
-  RowValidator,
-  ValidationResult,
-} from './editing.types';
+import type { EditMode, RowEditState, RowSaveState, RowUpdateHandler, RowValidator, ValidationResult } from './editing.types';
 import { errorMessage, isCellEditable, setColumnValue, shallowEqualValue } from './editing.utils';
 
 export interface ActiveEdit {
@@ -240,9 +233,7 @@ export function useGridEditing<TData extends RowData>(options: UseGridEditingOpt
       } catch {
         return;
       }
-      const editableColumns = table
-        .getVisibleLeafColumns()
-        .filter((c) => isCellEditable(row, c, opts.isRowEditable));
+      const editableColumns = table.getVisibleLeafColumns().filter((c) => isCellEditable(row, c, opts.isRowEditable));
       if (editableColumns.length === 0) return;
 
       if (opts.mode === 'row') {
@@ -334,6 +325,20 @@ export function useGridEditing<TData extends RowData>(options: UseGridEditingOpt
       isDirty,
       dismissSaveError,
     }),
-    [options.enabled, options.mode, active, drafts, saveStates, overrides, checkCellEditable, startEditing, setDraftValue, commit, cancel, isDirty, dismissSaveError],
+    [
+      options.enabled,
+      options.mode,
+      active,
+      drafts,
+      saveStates,
+      overrides,
+      checkCellEditable,
+      startEditing,
+      setDraftValue,
+      commit,
+      cancel,
+      isDirty,
+      dismissSaveError,
+    ],
   );
 }

@@ -58,8 +58,15 @@ export interface GridRowProps<TData extends RowData> {
   tree: boolean;
 }
 
-function RowInner<TData extends RowData>(props: GridRowProps<TData> & { dragBindings?: SortableBindings; setNodeRef?: (el: HTMLElement | null) => void; dragStyle?: CSSProperties }) {
-  const { row, rowIndex, layout, fill, focusedCol, editing, labels, handlers, classNames, styles, editState, saveState, activeEditColumn } = props;
+function RowInner<TData extends RowData>(
+  props: GridRowProps<TData> & {
+    dragBindings?: SortableBindings;
+    setNodeRef?: (el: HTMLElement | null) => void;
+    dragStyle?: CSSProperties;
+  },
+) {
+  const { row, rowIndex, layout, fill, focusedCol, editing, labels, handlers, classNames, styles, editState, saveState, activeEditColumn } =
+    props;
   const cellsById = row._getAllCellsByColumnId();
   const isGroup = row.getIsGrouped();
   const rowEditing = activeEditColumn !== undefined;

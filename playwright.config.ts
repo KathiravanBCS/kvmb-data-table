@@ -17,7 +17,11 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium-light', use: { ...devices['Desktop Chrome'], colorScheme: 'light', launchOptions: { executablePath } } },
-    { name: 'chromium-dark', use: { ...devices['Desktop Chrome'], colorScheme: 'dark', launchOptions: { executablePath } }, testMatch: /theme|a11y/ },
+    {
+      name: 'chromium-dark',
+      use: { ...devices['Desktop Chrome'], colorScheme: 'dark', launchOptions: { executablePath } },
+      testMatch: /theme|a11y/,
+    },
   ],
   webServer: {
     command: 'npm run docs:build && npx vite preview --config docs/vite.config.ts --port 4173 --strictPort',

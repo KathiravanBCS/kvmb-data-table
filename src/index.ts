@@ -95,12 +95,7 @@ export {
 
 // Persistence
 export { clearPersistedState, loadPersistedState, savePersistedState } from './features/persistence/persistence';
-export type {
-  GridStateStorage,
-  PersistableStateKey,
-  PersistedGridState,
-  PersistStateOptions,
-} from './features/persistence/persistence';
+export type { GridStateStorage, PersistableStateKey, PersistedGridState, PersistStateOptions } from './features/persistence/persistence';
 
 // Server-side helpers
 export { toServerQuery, toSearchParams } from './adapters/server';

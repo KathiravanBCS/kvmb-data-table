@@ -77,7 +77,14 @@ export function GridCell<TData extends RowData>(props: GridCellProps<TData>) {
           {expanded ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
         </ActionIcon>
         <span className="mdg-cell-text">{flexRender(column.columnDef.cell, cell.getContext())}</span>
-        <span className="mdg-group-count">({row.getLeafRows().filter((r) => !r.getIsGrouped()).length.toLocaleString()})</span>
+        <span className="mdg-group-count">
+          (
+          {row
+            .getLeafRows()
+            .filter((r) => !r.getIsGrouped())
+            .length.toLocaleString()}
+          )
+        </span>
       </span>
     );
   } else if (cell.getIsAggregated()) {

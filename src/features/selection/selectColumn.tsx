@@ -43,13 +43,7 @@ function SelectCell<TData extends RowData>({ row }: CellContext<TData, unknown>)
   if (single) {
     return <Radio {...common} onChange={() => row.toggleSelected(true)} />;
   }
-  return (
-    <Checkbox
-      {...common}
-      indeterminate={!row.getIsSelected() && row.getIsSomeSelected()}
-      onChange={row.getToggleSelectedHandler()}
-    />
-  );
+  return <Checkbox {...common} indeterminate={!row.getIsSelected() && row.getIsSomeSelected()} onChange={row.getToggleSelectedHandler()} />;
 }
 
 export function createSelectColumn<TData extends RowData>(mode: 'single' | 'multiple'): ColumnDef<TData, unknown> {

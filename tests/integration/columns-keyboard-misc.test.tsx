@@ -28,7 +28,12 @@ describe('column management', () => {
 
   it('locked columns cannot be hidden', async () => {
     const user = userEvent.setup();
-    renderWithMantine(<DataGrid data={employees} columns={[{ accessorKey: 'name', header: 'Name', meta: { locked: true } }, ...employeeColumns.slice(1)]} />);
+    renderWithMantine(
+      <DataGrid
+        data={employees}
+        columns={[{ accessorKey: 'name', header: 'Name', meta: { locked: true } }, ...employeeColumns.slice(1)]}
+      />,
+    );
     await user.click(screen.getByRole('button', { name: 'Columns' }));
     expect(within(await screen.findByRole('dialog', { name: /Columns/ })).getByRole('checkbox', { name: 'Name' })).toBeDisabled();
   });
@@ -87,13 +92,27 @@ describe('column management', () => {
   });
 
   it('renders drag handles for column reordering (unpinned, unlocked columns only)', () => {
-    renderWithMantine(<DataGrid data={employees} columns={[{ accessorKey: 'name', header: 'Name', meta: { locked: true } }, ...employeeColumns.slice(1)]} enableColumnOrdering />);
+    renderWithMantine(
+      <DataGrid
+        data={employees}
+        columns={[{ accessorKey: 'name', header: 'Name', meta: { locked: true } }, ...employeeColumns.slice(1)]}
+        enableColumnOrdering
+      />,
+    );
     expect(screen.queryByRole('button', { name: 'Drag to reorder column: Name' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Drag to reorder column: Salary' })).toHaveAttribute('aria-roledescription', 'sortable');
   });
 
   it('honours canDragRow', () => {
-    renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableRowDragging canDragRow={(row) => row.original.active} onRowReorder={() => {}} />);
+    renderWithMantine(
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enableRowDragging
+        canDragRow={(row) => row.original.active}
+        onRowReorder={() => {}}
+      />,
+    );
     const handles = screen.getAllByRole('button', { name: 'Drag to reorder row' });
     expect(handles.map((h) => (h as HTMLButtonElement).disabled)).toEqual([false, true, false, false, true]);
   });
@@ -110,7 +129,8 @@ describe('column management', () => {
 });
 
 describe('keyboard navigation', () => {
-  const cellAt = (container: HTMLElement, r: number, c: number) => container.querySelector<HTMLElement>(`[data-row-index="${r}"][data-col-index="${c}"]`)!;
+  const cellAt = (container: HTMLElement, r: number, c: number) =>
+    container.querySelector<HTMLElement>(`[data-row-index="${r}"][data-col-index="${c}"]`)!;
 
   it('uses a roving tabindex and arrow / Home / End / Ctrl+Home navigation', async () => {
     const user = userEvent.setup();
@@ -151,7 +171,9 @@ describe('keyboard navigation', () => {
 
   it('expands groups with Enter', async () => {
     const user = userEvent.setup();
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableGrouping defaultGrouping={['department']} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} enableGrouping defaultGrouping={['department']} />,
+    );
     cellAt(container, 0, 0).focus();
     await user.keyboard('{Enter}');
     expect(container.querySelector('.mdg-group-row')).toHaveAttribute('aria-expanded', 'true');
@@ -162,8 +184,18 @@ describe('virtualization', () => {
   // jsdom has no layout; give the scroll container a real viewport size.
   const sizeOf = (el: HTMLElement, axis: 'w' | 'h') => (el.classList?.contains('mdg-scroll') ? (axis === 'h' ? 400 : 1000) : 0);
   beforeAll(() => {
-    Object.defineProperty(HTMLElement.prototype, 'clientHeight', { configurable: true, get() { return sizeOf(this, 'h'); } });
-    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get() { return sizeOf(this, 'w'); } });
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+      configurable: true,
+      get() {
+        return sizeOf(this, 'h');
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+      configurable: true,
+      get() {
+        return sizeOf(this, 'w');
+      },
+    });
   });
   afterAll(() => {
     delete (HTMLElement.prototype as unknown as Record<string, unknown>).clientHeight;
@@ -172,7 +204,9 @@ describe('virtualization', () => {
 
   it('renders only a window of rows for 10,000 rows', () => {
     const rows = makeRows(10_000);
-    const { container } = renderWithMantine(<DataGrid data={rows} columns={employeeColumns} enableVirtualization height={400} overscan={5} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={rows} columns={employeeColumns} enableVirtualization height={400} overscan={5} />,
+    );
     const rendered = container.querySelectorAll('.mdg-tbody [role="row"]').length;
     expect(rendered).toBeGreaterThan(5);
     expect(rendered).toBeLessThan(60);
@@ -187,7 +221,15 @@ describe('virtualization', () => {
     const rows = makeRows(2_000);
     const onSelection = vi.fn();
     const { container } = renderWithMantine(
-      <DataGrid data={rows} columns={employeeColumns} enableVirtualization height={300} enableRowSelection onRowSelectionChange={onSelection} globalFilter="Person 1999" />,
+      <DataGrid
+        data={rows}
+        columns={employeeColumns}
+        enableVirtualization
+        height={300}
+        enableRowSelection
+        onRowSelectionChange={onSelection}
+        globalFilter="Person 1999"
+      />,
     );
     expect(columnTexts(container, 'name')).toEqual(['Person 1999']);
     await userEvent.setup().click(screen.getAllByRole('checkbox', { name: 'Select row' })[0]);

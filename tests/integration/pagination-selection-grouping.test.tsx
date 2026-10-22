@@ -31,7 +31,14 @@ describe('pagination', () => {
 
   it('uses rowCount and does not slice rows for server pagination', () => {
     const { container } = renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} enablePagination manualPagination rowCount={95} pagination={{ pageIndex: 3, pageSize: 25 }} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enablePagination
+        manualPagination
+        rowCount={95}
+        pagination={{ pageIndex: 3, pageSize: 25 }}
+      />,
     );
     expect(columnTexts(container, 'name')).toHaveLength(5);
     expect(screen.getByText('76–95 of 95')).toBeInTheDocument();
@@ -68,7 +75,9 @@ describe('row selection', () => {
   it('single selection mode uses radios and replaces the selection', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
-    renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableRowSelection selectionMode="single" onRowSelectionChange={onChange} />);
+    renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} enableRowSelection selectionMode="single" onRowSelectionChange={onChange} />,
+    );
     const radios = screen.getAllByRole('radio', { name: 'Select row' });
     await user.click(radios[0]);
     await user.click(radios[2]);
@@ -80,7 +89,13 @@ describe('row selection', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
     renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} enableRowSelection={(row) => row.original.active} selectOnRowClick onRowSelectionChange={onChange} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enableRowSelection={(row) => row.original.active}
+        selectOnRowClick
+        onRowSelectionChange={onChange}
+      />,
     );
     const boxes = screen.getAllByRole('checkbox', { name: 'Select row' });
     expect(boxes[1]).toBeDisabled();
@@ -112,7 +127,9 @@ describe('row selection', () => {
   });
 
   it('keeps selection by stable row id across data refreshes (controlled)', () => {
-    const { rerender } = renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableRowSelection rowSelection={{ '3': true }} />);
+    const { rerender } = renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} enableRowSelection rowSelection={{ '3': true }} />,
+    );
     rerender(<DataGrid data={[...employees].reverse()} columns={employeeColumns} enableRowSelection rowSelection={{ '3': true }} />);
     const selected = screen.getAllByRole('row').filter((r) => r.getAttribute('aria-selected') === 'true');
     expect(selected).toHaveLength(1);
@@ -124,13 +141,20 @@ describe('grouping & aggregation', () => {
   const columns: ColumnDef<Employee>[] = [
     { accessorKey: 'department', header: 'Department' },
     { accessorKey: 'name', header: 'Name', aggregationFn: 'count', aggregatedCell: ({ getValue }) => `${getValue()} people` },
-    { accessorKey: 'salary', header: 'Salary', aggregationFn: aggregationFns.avg, aggregatedCell: ({ getValue }) => `avg ${Math.round(getValue() as number)}` },
+    {
+      accessorKey: 'salary',
+      header: 'Salary',
+      aggregationFn: aggregationFns.avg,
+      aggregatedCell: ({ getValue }) => `avg ${Math.round(getValue() as number)}`,
+    },
     { accessorKey: 'active', header: 'Active' },
   ];
 
   it('groups rows with counts, aggregates and expand/collapse', async () => {
     const user = userEvent.setup();
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} enableGrouping defaultGrouping={['department']} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={columns} enableGrouping defaultGrouping={['department']} />,
+    );
     const groupRows = container.querySelectorAll('.mdg-group-row');
     expect(groupRows).toHaveLength(3);
     expect(groupRows[0]).toHaveTextContent('Engineering(2)');
@@ -177,7 +201,9 @@ describe('grouping & aggregation', () => {
 
   it('exposes the API for selection and grouping-aware export', () => {
     const api = createRef<DataGridApi<Employee>>();
-    renderWithMantine(<DataGrid data={employees} columns={columns} enableGrouping enableRowSelection defaultGrouping={['department']} apiRef={api} />);
+    renderWithMantine(
+      <DataGrid data={employees} columns={columns} enableGrouping enableRowSelection defaultGrouping={['department']} apiRef={api} />,
+    );
     expect(api.current!.exportCsv({ download: false }).rowCount).toBe(5);
     api.current!.selectAllFiltered();
   });

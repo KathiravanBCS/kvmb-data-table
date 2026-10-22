@@ -67,7 +67,10 @@ export function ColumnManager<TData extends RowData>() {
   const [opened, setOpened] = useState(false);
   const close = useCallback(() => setOpened(false), []);
   useOutsideDismiss(opened, close, `.${MANAGER_CLASS}, [data-dg-columns-target]`);
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const columns = table.getAllLeafColumns().filter((c) => !isInternalColumn(c.id));
   const ids = columns.map((c) => c.id);
@@ -82,7 +85,15 @@ export function ColumnManager<TData extends RowData>() {
   };
 
   return (
-    <Popover opened={opened} onChange={setOpened} position="bottom-end" withinPortal shadow="md" closeOnClickOutside={false} classNames={{ dropdown: MANAGER_CLASS }}>
+    <Popover
+      opened={opened}
+      onChange={setOpened}
+      position="bottom-end"
+      withinPortal
+      shadow="md"
+      closeOnClickOutside={false}
+      classNames={{ dropdown: MANAGER_CLASS }}
+    >
       <Popover.Target>
         <Button
           size="xs"
@@ -99,10 +110,18 @@ export function ColumnManager<TData extends RowData>() {
       <Popover.Dropdown p="xs" role="dialog" aria-label={labels.columns}>
         <Stack gap={4} miw={240}>
           <Group gap={4} justify="space-between">
-            <Button color="gray" c="var(--mantine-color-text)" size="compact-xs" variant="subtle" onClick={() => table.toggleAllColumnsVisible(true)}>
+            <Button
+              color="gray"
+              c="var(--mantine-color-text)"
+              size="compact-xs"
+              variant="subtle"
+              onClick={() => table.toggleAllColumnsVisible(true)}
+            >
               {labels.showAllColumns}
             </Button>
-            <Button color="gray" c="var(--mantine-color-text)"
+            <Button
+              color="gray"
+              c="var(--mantine-color-text)"
               size="compact-xs"
               variant="subtle"
               onClick={() => {

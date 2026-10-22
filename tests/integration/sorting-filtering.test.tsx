@@ -44,7 +44,11 @@ describe('sorting', () => {
         <DataGrid
           data={employees}
           columns={[
-            { accessorKey: 'name', header: 'Name', sortingFn: (a, b) => a.original.name.length - b.original.name.length || a.original.name.localeCompare(b.original.name) },
+            {
+              accessorKey: 'name',
+              header: 'Name',
+              sortingFn: (a, b) => a.original.name.length - b.original.name.length || a.original.name.localeCompare(b.original.name),
+            },
             { accessorKey: 'salary', header: 'Salary' },
           ]}
           sorting={sorting}
@@ -82,7 +86,9 @@ describe('sorting', () => {
 describe('filtering', () => {
   it('filters with the debounced global search and shows a chip', async () => {
     const user = userEvent.setup();
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableFiltering globalFilterDebounce={0} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} enableFiltering globalFilterDebounce={0} />,
+    );
     await user.type(screen.getByRole('searchbox', { name: 'Search all columns' }), 'sales');
     await waitFor(() => expect(columnTexts(container, 'name')).toEqual(['Bob', 'Eve']));
     expect(screen.getByText('“sales”')).toBeInTheDocument();
@@ -94,10 +100,18 @@ describe('filtering', () => {
     const user = userEvent.setup();
     const model: FilterGroup = {
       ...createFilterGroup('and'),
-      children: [createFilterCondition('department', 'in', ['Engineering', 'Sales']), { ...createFilterGroup('or'), children: [createFilterCondition('salary', 'gt', 100000), createFilterCondition('active', 'isFalse')] }],
+      children: [
+        createFilterCondition('department', 'in', ['Engineering', 'Sales']),
+        {
+          ...createFilterGroup('or'),
+          children: [createFilterCondition('salary', 'gt', 100000), createFilterCondition('active', 'isFalse')],
+        },
+      ],
     };
     const onChange = vi.fn();
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableFiltering defaultFilterModel={model} onFilterModelChange={onChange} />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} enableFiltering defaultFilterModel={model} onFilterModelChange={onChange} />,
+    );
     expect(columnTexts(container, 'name')).toEqual(['Alice', 'Bob', 'Carol', 'Eve']);
     const chips = screen.getByRole('list', { name: 'Filters' });
     expect(within(chips).getByText(/Department is any of Engineering, Sales/)).toBeInTheDocument();
@@ -141,9 +155,19 @@ describe('filtering', () => {
   it('saves and applies filter presets', async () => {
     const user = userEvent.setup();
     const onPresets = vi.fn();
-    const preset = { id: 'p1', name: 'Engineers', model: { ...createFilterGroup('and'), children: [createFilterCondition('department', 'in', ['Engineering'])] } };
+    const preset = {
+      id: 'p1',
+      name: 'Engineers',
+      model: { ...createFilterGroup('and'), children: [createFilterCondition('department', 'in', ['Engineering'])] },
+    };
     const { container } = renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} enableFiltering defaultFilterPresets={[preset]} onFilterPresetsChange={onPresets} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enableFiltering
+        defaultFilterPresets={[preset]}
+        onFilterPresetsChange={onPresets}
+      />,
     );
     await user.click(screen.getByRole('button', { name: /Filters/ }));
     await user.click(await screen.findByRole('button', { name: 'Presets' }));
@@ -157,11 +181,32 @@ describe('filtering', () => {
     const queries: DataGridQuery[] = [];
     const model: FilterGroup = { ...createFilterGroup('and'), children: [createFilterCondition('name', 'equals', 'Bob')] };
     const { container, rerender } = renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} manualFiltering manualSorting manualPagination enablePagination rowCount={500} onQueryChange={(q) => queries.push(q)} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        manualFiltering
+        manualSorting
+        manualPagination
+        enablePagination
+        rowCount={500}
+        onQueryChange={(q) => queries.push(q)}
+      />,
     );
     expect(queries).toHaveLength(1);
     expect(queries[0]).toMatchObject({ pagination: { pageIndex: 0, pageSize: 25 }, sorting: [], globalFilter: '' });
-    rerender(<DataGrid data={employees} columns={employeeColumns} manualFiltering manualSorting manualPagination enablePagination rowCount={500} filterModel={model} onQueryChange={(q) => queries.push(q)} />);
+    rerender(
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        manualFiltering
+        manualSorting
+        manualPagination
+        enablePagination
+        rowCount={500}
+        filterModel={model}
+        onQueryChange={(q) => queries.push(q)}
+      />,
+    );
     expect(queries.at(-1)!.filterModel).toBe(model);
     expect(columnTexts(container, 'name')).toHaveLength(5);
     expect(screen.getByText(`1–25 of ${(500).toLocaleString()}`)).toBeInTheDocument();
@@ -170,9 +215,24 @@ describe('filtering', () => {
   it('resets to the first page when filters change', async () => {
     const onPagination = vi.fn();
     const { rerender } = renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} enablePagination defaultPagination={{ pageIndex: 1, pageSize: 2 }} onPaginationChange={onPagination} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enablePagination
+        defaultPagination={{ pageIndex: 1, pageSize: 2 }}
+        onPaginationChange={onPagination}
+      />,
     );
-    rerender(<DataGrid data={employees} columns={employeeColumns} enablePagination defaultPagination={{ pageIndex: 1, pageSize: 2 }} onPaginationChange={onPagination} globalFilter="a" />);
+    rerender(
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        enablePagination
+        defaultPagination={{ pageIndex: 1, pageSize: 2 }}
+        onPaginationChange={onPagination}
+        globalFilter="a"
+      />,
+    );
     // Controlled global filter change does not go through the setter; use the API path instead:
     expect(onPagination).not.toHaveBeenCalled();
     act(() => {

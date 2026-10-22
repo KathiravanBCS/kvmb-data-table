@@ -15,11 +15,7 @@ const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 
 
 // Every dependency / peer dependency (and their sub-paths) stays external, so
 // consumers get a single copy of React, Mantine, TanStack, dnd-kit and ExcelJS.
-const externalPackages = [
-  ...Object.keys(pkg.dependencies ?? {}),
-  ...Object.keys(pkg.peerDependencies ?? {}),
-  'react/jsx-runtime',
-];
+const externalPackages = [...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.peerDependencies ?? {}), 'react/jsx-runtime'];
 const external = (id) => externalPackages.some((name) => id === name || id.startsWith(`${name}/`));
 
 const input = {

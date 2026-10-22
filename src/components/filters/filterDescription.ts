@@ -9,11 +9,7 @@ function formatValue(value: FilterValue | undefined): string {
 }
 
 /** Human-readable summary of a condition, e.g. `Salary between 10 – 20`. */
-export function describeCondition(
-  condition: FilterCondition,
-  registry: FilterOperatorRegistry,
-  fieldLabel: string,
-): string {
+export function describeCondition(condition: FilterCondition, registry: FilterOperatorRegistry, fieldLabel: string): string {
   const def = registry.get(condition.operator);
   const opLabel = def?.label ?? condition.operator;
   if (!def || def.input === 'none') return `${fieldLabel} ${opLabel.toLowerCase()}`;

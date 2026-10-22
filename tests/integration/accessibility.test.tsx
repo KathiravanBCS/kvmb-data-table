@@ -44,7 +44,16 @@ describe('accessibility (axe-core)', () => {
   });
 
   it('grouped, empty, loading and error states have no violations', async () => {
-    const grouped = renderWithMantine(<DataGrid aria-label="Grouped" data={employees} columns={employeeColumns} enableGrouping defaultGrouping={['department']} showFooter />);
+    const grouped = renderWithMantine(
+      <DataGrid
+        aria-label="Grouped"
+        data={employees}
+        columns={employeeColumns}
+        enableGrouping
+        defaultGrouping={['department']}
+        showFooter
+      />,
+    );
     expect(await violations(grouped.container)).toEqual([]);
     grouped.unmount();
     const empty = renderWithMantine(<DataGrid aria-label="Empty" data={[]} columns={employeeColumns} />);
@@ -59,7 +68,9 @@ describe('accessibility (axe-core)', () => {
 
   it('editing (cell and row mode) has no violations', async () => {
     const user = userEvent.setup();
-    const { container } = renderWithMantine(<DataGrid aria-label="Editable" data={employees} columns={employeeColumns} enableEditing editMode="row" />);
+    const { container } = renderWithMantine(
+      <DataGrid aria-label="Editable" data={employees} columns={employeeColumns} enableEditing editMode="row" />,
+    );
     await user.click(screen.getAllByRole('button', { name: 'Edit' })[0]);
     expect(await violations(container)).toEqual([]);
   });

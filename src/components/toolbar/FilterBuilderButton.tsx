@@ -40,7 +40,13 @@ export function FilterBuilderButton<TData extends RowData>() {
           size="xs"
           variant="default"
           leftSection={<IconFilter size={14} />}
-          rightSection={activeFilterCount ? <Badge size="xs" circle>{activeFilterCount}</Badge> : null}
+          rightSection={
+            activeFilterCount ? (
+              <Badge size="xs" circle>
+                {activeFilterCount}
+              </Badge>
+            ) : null
+          }
           onClick={() => (opened ? setOpened(false) : open())}
           data-dg-filter-target=""
           aria-haspopup="dialog"

@@ -16,12 +16,7 @@ import type {
   VisibilityState,
 } from '@tanstack/react-table';
 import type { FilterGroup, FilterOperatorDefinition, FilterPreset } from '../features/filtering/filter.types';
-import type {
-  EditMode,
-  EditTrigger,
-  RowUpdateHandler,
-  RowValidator,
-} from '../features/editing/editing.types';
+import type { EditMode, EditTrigger, RowUpdateHandler, RowValidator } from '../features/editing/editing.types';
 import type { PersistStateOptions } from '../features/persistence/persistence';
 import type { DataGridLabels } from './grid.defaults';
 import type { CsvExportOptions, CsvExportResult } from '../export/csv';

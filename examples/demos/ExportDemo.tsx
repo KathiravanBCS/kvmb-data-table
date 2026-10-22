@@ -23,7 +23,10 @@ export default function ExportDemo() {
         { name: 'Selected', rows: 'selected' },
         {
           name: 'Summary',
-          columns: [{ key: 'metric', header: 'Metric', width: 24 }, { key: 'value', header: 'Value', width: 16 }],
+          columns: [
+            { key: 'metric', header: 'Metric', width: 24 },
+            { key: 'value', header: 'Value', width: 16 },
+          ],
           data: [
             { metric: 'Exported at', value: new Date().toISOString() },
             { metric: 'Rows (filtered)', value: api.current!.table.getFilteredRowModel().rows.length },
@@ -40,7 +43,11 @@ export default function ExportDemo() {
         <Button size="xs" onClick={() => api.current!.exportCsv({ filename: 'employees.csv' })}>
           CSV (filtered, visible columns)
         </Button>
-        <Button size="xs" variant="light" onClick={() => api.current!.exportCsv({ rows: 'selected', columns: 'all', filename: 'selected.csv' })}>
+        <Button
+          size="xs"
+          variant="light"
+          onClick={() => api.current!.exportCsv({ rows: 'selected', columns: 'all', filename: 'selected.csv' })}
+        >
           CSV (selected, all columns)
         </Button>
         <Button size="xs" variant="light" onClick={excel}>
@@ -48,7 +55,16 @@ export default function ExportDemo() {
         </Button>
         {progress !== null && <Progress value={progress * 100} w={120} aria-label="Export progress" />}
       </Group>
-      <DataGrid apiRef={api} data={data} columns={employeeColumns} enableRowSelection enableFiltering enableExport height={380} aria-label="Exportable employees" />
+      <DataGrid
+        apiRef={api}
+        data={data}
+        columns={employeeColumns}
+        enableRowSelection
+        enableFiltering
+        enableExport
+        height={380}
+        aria-label="Exportable employees"
+      />
     </Stack>
   );
 }

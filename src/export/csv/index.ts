@@ -64,19 +64,14 @@ export function toCsv(
   rows: readonly (readonly unknown[])[],
   { delimiter = ',', lineSeparator = '\r\n', escapeFormulas = true } = {},
 ): string {
-  return rows
-    .map((r) => r.map((v) => escapeCsvCell(formatCsvValue(v), delimiter, escapeFormulas)).join(delimiter))
-    .join(lineSeparator);
+  return rows.map((r) => r.map((v) => escapeCsvCell(formatCsvValue(v), delimiter, escapeFormulas)).join(delimiter)).join(lineSeparator);
 }
 
 /**
  * Exports grid rows to CSV. Pass the TanStack table instance
  * (available as `api.table` from the grid API or via `useDataGridContext`).
  */
-export function exportToCsv<TData extends RowData>(
-  table: Table<TData>,
-  options: CsvExportOptions<TData> = {},
-): CsvExportResult {
+export function exportToCsv<TData extends RowData>(table: Table<TData>, options: CsvExportOptions<TData> = {}): CsvExportResult {
   const {
     rows: rowScope = 'filtered',
     columns: columnScope = 'visible',

@@ -1,5 +1,17 @@
 import { useEffect, useState, type ComponentType } from 'react';
-import { ActionIcon, AppShell, Burger, Group, NavLink, ScrollArea, Text, Title, Tooltip, useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
+import {
+  ActionIcon,
+  AppShell,
+  Burger,
+  Group,
+  NavLink,
+  ScrollArea,
+  Text,
+  Title,
+  Tooltip,
+  useComputedColorScheme,
+  useMantineColorScheme,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconBrandGithub, IconMoon, IconSun, IconTable } from '@tabler/icons-react';
 import { GettingStartedPage } from './pages/GettingStarted';
@@ -101,11 +113,23 @@ export function App() {
           </Group>
           <Group gap="xs">
             <Tooltip label={`Switch to ${scheme === 'dark' ? 'light' : 'dark'} mode`}>
-              <ActionIcon variant="default" size="lg" onClick={toggleColorScheme} aria-label="Toggle color scheme" data-testid="color-scheme-toggle">
+              <ActionIcon
+                variant="default"
+                size="lg"
+                onClick={toggleColorScheme}
+                aria-label="Toggle color scheme"
+                data-testid="color-scheme-toggle"
+              >
                 {scheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
               </ActionIcon>
             </Tooltip>
-            <ActionIcon component="a" href="https://github.com/KathiravanBCS/kvmb-data-table" variant="default" size="lg" aria-label="GitHub repository">
+            <ActionIcon
+              component="a"
+              href="https://github.com/KathiravanBCS/kvmb-data-table"
+              variant="default"
+              size="lg"
+              aria-label="GitHub repository"
+            >
               <IconBrandGithub size={18} />
             </ActionIcon>
           </Group>

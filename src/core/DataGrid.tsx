@@ -103,9 +103,12 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
 
   // ---------------------------------------------------------------- navigation
   const scrollToIndexRef = ctx.scrollToIndexRef;
-  const registerScrollToIndex = useCallback((fn: (index: number) => void) => {
-    scrollToIndexRef.current = fn;
-  }, [scrollToIndexRef]);
+  const registerScrollToIndex = useCallback(
+    (fn: (index: number) => void) => {
+      scrollToIndexRef.current = fn;
+    },
+    [scrollToIndexRef],
+  );
   const viewportRows = typeof props.height === 'number' ? Math.max(1, Math.floor(props.height / rowHeight) - 1) : 10;
   const nav = useGridNavigation<TData>({
     enabled: features.keyboardNavigation,
@@ -130,7 +133,13 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
         const { props: p, features: f, editing: e } = latest.current;
         const target = event.target as HTMLElement;
         p.onRowClick?.(row, event);
-        if (f.selection && p.selectOnRowClick && !row.getIsGrouped() && row.getCanSelect() && !target.closest('button, input, a, [role="checkbox"], .mdg-editor')) {
+        if (
+          f.selection &&
+          p.selectOnRowClick &&
+          !row.getIsGrouped() &&
+          row.getCanSelect() &&
+          !target.closest('button, input, a, [role="checkbox"], .mdg-editor')
+        ) {
           row.toggleSelected(p.selectionMode === 'single' ? true : undefined);
         }
         if (f.editing && (p.editTrigger ?? 'doubleClick') === 'click') {
@@ -172,7 +181,12 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
   const cellStyles = { row: s('row'), cell: s('cell'), groupRow: s('groupRow'), body: s('body') };
   const classKey = `${cellStyles.row.className}|${cellStyles.cell.className}|${cellStyles.groupRow.className}|${cellStyles.body.className}`;
   const rowClassNames = useMemo(
-    () => ({ row: cellStyles.row.className, cell: cellStyles.cell.className, groupRow: cellStyles.groupRow.className, body: cellStyles.body.className }),
+    () => ({
+      row: cellStyles.row.className,
+      cell: cellStyles.cell.className,
+      groupRow: cellStyles.groupRow.className,
+      body: cellStyles.body.className,
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [classKey],
   );
@@ -247,7 +261,11 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
           fill={fill}
           focusedCol={nav.focused.row === -1 ? nav.focused.col : -1}
           sortableColumns={sortableColumns}
-          classNames={{ header: headerStyles.header.className, headerRow: headerStyles.headerRow.className, headerCell: headerStyles.headerCell.className }}
+          classNames={{
+            header: headerStyles.header.className,
+            headerRow: headerStyles.headerRow.className,
+            headerCell: headerStyles.headerCell.className,
+          }}
           styles={{ header: headerStyles.header.style, headerRow: headerStyles.headerRow.style, headerCell: headerStyles.headerCell.style }}
           sticky={props.stickyHeader ?? true}
         />
@@ -261,12 +279,24 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
               </div>
             </div>
           ) : (
-            <ErrorState error={props.error} labels={labels} onRetry={props.onRetry} className={s('errorState').className} style={s('errorState').style} />
+            <ErrorState
+              error={props.error}
+              labels={labels}
+              onRetry={props.onRetry}
+              className={s('errorState').className}
+              style={s('errorState').style}
+            />
           )}
         </div>
       ) : showSkeleton ? (
         <div role="rowgroup" className={rowClassNames.body}>
-          <SkeletonRows count={props.skeletonRows ?? 8} layout={layout} fill={fill} rowClassName={rowClassNames.row} cellClassName={rowClassNames.cell} />
+          <SkeletonRows
+            count={props.skeletonRows ?? 8}
+            layout={layout}
+            fill={fill}
+            rowClassName={rowClassNames.row}
+            cellClassName={rowClassNames.cell}
+          />
         </div>
       ) : showEmpty ? (
         <div role="rowgroup" className={rowClassNames.body}>
@@ -277,7 +307,12 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
               </div>
             </div>
           ) : (
-            <EmptyState filtered={preFilteredCount > 0} labels={labels} className={s('emptyState').className} style={s('emptyState').style} />
+            <EmptyState
+              filtered={preFilteredCount > 0}
+              labels={labels}
+              className={s('emptyState').className}
+              style={s('emptyState').style}
+            />
           )}
         </div>
       ) : (
@@ -349,21 +384,26 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
       >
         {features.toolbar && <DataGridToolbar<TData> className={s('toolbar').className} style={s('toolbar').style} />}
         <div className="mdg-viewport">
-        <div
-          ref={scrollRef}
-          className={scrollStyles.className}
-          style={{ ...scrollStyles.style, height: toCssSize(props.height), maxHeight: toCssSize(props.maxHeight) }}
-          data-has-height={props.height !== undefined || props.maxHeight !== undefined || undefined}
-        >
-          {useDnd ? (
-            <GridDndProvider table={table} data={props.data} onRowReorder={props.onRowReorder}>
-              {tableElement}
-            </GridDndProvider>
-          ) : (
-            tableElement
-          )}
-        </div>
-          <LoadingOverlay visible={loading && !showSkeleton} zIndex={6} overlayProps={{ blur: 0, backgroundOpacity: 0.35 }} loaderProps={{ size: 'sm' }} />
+          <div
+            ref={scrollRef}
+            className={scrollStyles.className}
+            style={{ ...scrollStyles.style, height: toCssSize(props.height), maxHeight: toCssSize(props.maxHeight) }}
+            data-has-height={props.height !== undefined || props.maxHeight !== undefined || undefined}
+          >
+            {useDnd ? (
+              <GridDndProvider table={table} data={props.data} onRowReorder={props.onRowReorder}>
+                {tableElement}
+              </GridDndProvider>
+            ) : (
+              tableElement
+            )}
+          </div>
+          <LoadingOverlay
+            visible={loading && !showSkeleton}
+            zIndex={6}
+            overlayProps={{ blur: 0, backgroundOpacity: 0.35 }}
+            loaderProps={{ size: 'sm' }}
+          />
         </div>
         {features.pagination && <GridPagination<TData> className={s('pagination').className} style={s('pagination').style} />}
         <div className="mdg-sr-only" aria-live="polite" aria-atomic="true" role="status">

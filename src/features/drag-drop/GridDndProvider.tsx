@@ -46,9 +46,7 @@ export function GridDndProvider<TData extends RowData>({ table, data, onRowReord
     if (!over || active.id === over.id) return;
     const type = (active.data.current as DragItemData | undefined)?.type;
     if (type === 'column') {
-      const current = table.getState().columnOrder.length
-        ? table.getState().columnOrder
-        : table.getAllLeafColumns().map((c) => c.id);
+      const current = table.getState().columnOrder.length ? table.getState().columnOrder : table.getAllLeafColumns().map((c) => c.id);
       const from = current.indexOf(String(active.id));
       const to = current.indexOf(String(over.id));
       if (from < 0 || to < 0) return;

@@ -59,7 +59,13 @@ function ActionsCell<TData extends RowData>({ row, table }: CellContext<TData, u
     <Group gap={4} wrap="nowrap" justify="center">
       {save?.status === 'error' && (
         <Tooltip label={`${labels.saveFailed}: ${save.error ?? ''}`} withinPortal>
-          <ActionIcon size="sm" variant="subtle" color="red" aria-label={`${labels.saveFailed}: ${save.error ?? ''}`} onClick={() => editing.dismissSaveError(row.id)}>
+          <ActionIcon
+            size="sm"
+            variant="subtle"
+            color="red"
+            aria-label={`${labels.saveFailed}: ${save.error ?? ''}`}
+            onClick={() => editing.dismissSaveError(row.id)}
+          >
             <IconAlertTriangle size={16} />
           </ActionIcon>
         </Tooltip>

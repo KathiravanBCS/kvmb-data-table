@@ -23,7 +23,14 @@ export default function EditingDemo() {
   return (
     <Stack>
       <Group>
-        <SegmentedControl value={mode} onChange={(v) => setMode(v as EditMode)} data={[{ value: 'cell', label: 'Cell editing' }, { value: 'row', label: 'Row editing' }]} />
+        <SegmentedControl
+          value={mode}
+          onChange={(v) => setMode(v as EditMode)}
+          data={[
+            { value: 'cell', label: 'Cell editing' },
+            { value: 'row', label: 'Row editing' },
+          ]}
+        />
         <Switch label="Random save failures" checked={flaky} onChange={(e) => setFlaky(e.currentTarget.checked)} />
         <Switch label="Optimistic updates" checked={optimistic} onChange={(e) => setOptimistic(e.currentTarget.checked)} />
       </Group>

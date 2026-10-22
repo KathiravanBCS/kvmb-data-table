@@ -28,7 +28,14 @@ export function TextEditor<TData extends RowData>({ value, onChange, autoFocus, 
   );
 }
 
-export function NumberEditor<TData extends RowData>({ value, onChange, autoFocus, error, label, pending }: CellEditorProps<TData, unknown>) {
+export function NumberEditor<TData extends RowData>({
+  value,
+  onChange,
+  autoFocus,
+  error,
+  label,
+  pending,
+}: CellEditorProps<TData, unknown>) {
   const numeric = typeof value === 'number' ? value : value === null || value === undefined || value === '' ? '' : Number(value);
   return (
     <NumberInput
@@ -43,7 +50,15 @@ export function NumberEditor<TData extends RowData>({ value, onChange, autoFocus
   );
 }
 
-export function SelectEditor<TData extends RowData>({ value, onChange, autoFocus, error, label, options, pending }: CellEditorProps<TData, unknown>) {
+export function SelectEditor<TData extends RowData>({
+  value,
+  onChange,
+  autoFocus,
+  error,
+  label,
+  options,
+  pending,
+}: CellEditorProps<TData, unknown>) {
   return (
     <Select
       {...inputCommon(error, label)}
@@ -60,7 +75,15 @@ export function SelectEditor<TData extends RowData>({ value, onChange, autoFocus
   );
 }
 
-export function MultiSelectEditor<TData extends RowData>({ value, onChange, autoFocus, error, label, options, pending }: CellEditorProps<TData, unknown>) {
+export function MultiSelectEditor<TData extends RowData>({
+  value,
+  onChange,
+  autoFocus,
+  error,
+  label,
+  options,
+  pending,
+}: CellEditorProps<TData, unknown>) {
   const current = Array.isArray(value) ? value.map(String) : [];
   return (
     <MultiSelect
@@ -120,7 +143,14 @@ export function DateEditor<TData extends RowData>({ value, onChange, autoFocus, 
   );
 }
 
-export function DateTimeEditor<TData extends RowData>({ value, onChange, autoFocus, error, label, pending }: CellEditorProps<TData, unknown>) {
+export function DateTimeEditor<TData extends RowData>({
+  value,
+  onChange,
+  autoFocus,
+  error,
+  label,
+  pending,
+}: CellEditorProps<TData, unknown>) {
   return (
     <DateTimePicker
       {...inputCommon(error, label)}

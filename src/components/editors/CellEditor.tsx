@@ -102,7 +102,14 @@ export function CellEditorHost<TData extends RowData>({
   );
 
   return (
-    <div ref={hostRef} className="mdg-editor" onKeyDown={handleKeyDown} onBlur={handleBlur} onDoubleClick={(e) => e.stopPropagation()} data-invalid={error ? '' : undefined}>
+    <div
+      ref={hostRef}
+      className="mdg-editor"
+      onKeyDown={handleKeyDown}
+      onBlur={handleBlur}
+      onDoubleClick={(e) => e.stopPropagation()}
+      data-invalid={error ? '' : undefined}
+    >
       {/* Always rendered (disabled when valid) so the editor never remounts and keeps focus. */}
       <Tooltip label={error ?? ''} opened={!!error} disabled={!error} color="red" position="bottom-start" withinPortal withArrow>
         <div className="mdg-editor-inner">{editor}</div>

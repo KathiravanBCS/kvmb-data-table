@@ -7,6 +7,7 @@ import {
   type DataGridApi,
   type DataGridProps,
   type DataGridQuery,
+  type FilterCondition,
   type FilterGroup,
   type RowUpdateHandler,
 } from '../../src';
@@ -69,8 +70,14 @@ describe('public types', () => {
   it('keeps the filter model serialisable', () => {
     const model: FilterGroup = { type: 'group', id: 'root', logic: 'or', children: [createFilterCondition('salary', 'between', [1, 2])] };
     expectTypeOf(JSON.parse(JSON.stringify(model)) as FilterGroup).toEqualTypeOf<FilterGroup>();
-    // @ts-expect-error functions are not valid filter values
-    const invalid: FilterGroup = { type: 'group', id: 'x', logic: 'and', children: [{ type: 'condition', id: 'c', field: 'a', operator: 'eq', value: () => 1 }] };
+    const invalid: FilterCondition = {
+      type: 'condition',
+      id: 'c',
+      field: 'a',
+      operator: 'eq',
+      // @ts-expect-error functions are not valid filter values
+      value: () => 1,
+    };
     void invalid;
   });
 

@@ -23,7 +23,11 @@ describe('DataGrid rendering', () => {
   it('supports nested accessors, custom cells, headers and formatters', () => {
     const columns: ColumnDef<Employee>[] = [
       { accessorKey: 'address.city', header: () => <em>City</em> },
-      { accessorKey: 'name', header: 'Name', cell: ({ getValue }) => <strong data-testid="custom">{String(getValue()).toUpperCase()}</strong> },
+      {
+        accessorKey: 'name',
+        header: 'Name',
+        cell: ({ getValue }) => <strong data-testid="custom">{String(getValue()).toUpperCase()}</strong>,
+      },
       { accessorKey: 'salary', header: 'Salary', meta: { format: (v) => `$${(v as number) / 1000}k` } },
     ];
     const { container } = renderWithMantine(<DataGrid data={employees} columns={columns} />);
@@ -36,10 +40,19 @@ describe('DataGrid rendering', () => {
   it('applies conditional row and cell classes/styles', () => {
     const columns: ColumnDef<Employee>[] = [
       { accessorKey: 'name', header: 'Name' },
-      { accessorKey: 'salary', header: 'Salary', meta: { cellClassName: (cell) => ((cell.getValue() as number) > 100000 ? 'high' : undefined), cellStyle: { color: 'red' } } },
+      {
+        accessorKey: 'salary',
+        header: 'Salary',
+        meta: { cellClassName: (cell) => ((cell.getValue() as number) > 100000 ? 'high' : undefined), cellStyle: { color: 'red' } },
+      },
     ];
     const { container } = renderWithMantine(
-      <DataGrid data={employees} columns={columns} getRowClassName={(row) => (row.original.active ? 'is-active' : undefined)} getRowStyle={() => ({ fontStyle: 'italic' })} />,
+      <DataGrid
+        data={employees}
+        columns={columns}
+        getRowClassName={(row) => (row.original.active ? 'is-active' : undefined)}
+        getRowStyle={() => ({ fontStyle: 'italic' })}
+      />,
     );
     expect(container.querySelectorAll('.is-active')).toHaveLength(3);
     expect(container.querySelectorAll('.high')).toHaveLength(2);
@@ -75,7 +88,9 @@ describe('DataGrid rendering', () => {
   });
 
   it('applies density, wrapping and layout data attributes', () => {
-    const { container } = renderWithMantine(<DataGrid data={employees} columns={employeeColumns} density="compact" wrapText striped withColumnBorders layoutMode="fixed" />);
+    const { container } = renderWithMantine(
+      <DataGrid data={employees} columns={employeeColumns} density="compact" wrapText striped withColumnBorders layoutMode="fixed" />,
+    );
     const root = container.querySelector('.mdg-root')!;
     expect(root).toHaveAttribute('data-density', 'compact');
     expect(root).toHaveAttribute('data-wrap');
@@ -86,7 +101,12 @@ describe('DataGrid rendering', () => {
 
   it('supports Mantine Styles API classNames / styles and static classes', () => {
     const { container } = renderWithMantine(
-      <DataGrid data={employees} columns={employeeColumns} classNames={{ root: 'my-root', cell: 'my-cell' }} styles={{ headerCell: { letterSpacing: '1px' } }} />,
+      <DataGrid
+        data={employees}
+        columns={employeeColumns}
+        classNames={{ root: 'my-root', cell: 'my-cell' }}
+        styles={{ headerCell: { letterSpacing: '1px' } }}
+      />,
     );
     expect(container.querySelector('.my-root')).toHaveClass('mantine-DataGrid-root', 'mdg-root');
     expect(container.querySelectorAll('.my-cell').length).toBe(25);
@@ -109,7 +129,13 @@ describe('DataGrid rendering', () => {
   it('renders column groups (multi-level headers)', () => {
     const columns: ColumnDef<Employee>[] = [
       { header: 'Person', columns: [{ accessorKey: 'name', header: 'Name' }] },
-      { header: 'Job', columns: [{ accessorKey: 'department', header: 'Dept' }, { accessorKey: 'salary', header: 'Salary' }] },
+      {
+        header: 'Job',
+        columns: [
+          { accessorKey: 'department', header: 'Dept' },
+          { accessorKey: 'salary', header: 'Salary' },
+        ],
+      },
     ];
     renderWithMantine(<DataGrid data={employees} columns={columns} />);
     const headers = screen.getAllByRole('columnheader').map((h) => h.textContent);

@@ -13,9 +13,51 @@ export interface Employee {
 
 export const DEPARTMENTS = ['Engineering', 'Sales', 'Marketing', 'Finance', 'Support', 'Operations'];
 const ROLES = ['Associate', 'Specialist', 'Senior', 'Lead', 'Manager', 'Director'];
-const FIRST = ['Ada', 'Alan', 'Grace', 'Linus', 'Margaret', 'Ken', 'Barbara', 'Dennis', 'Frances', 'Edsger', 'Radia', 'Tim', 'Hedy', 'John', 'Katherine', 'Guido'];
-const LAST = ['Lovelace', 'Turing', 'Hopper', 'Torvalds', 'Hamilton', 'Thompson', 'Liskov', 'Ritchie', 'Allen', 'Dijkstra', 'Perlman', 'Berners-Lee', 'Lamarr', 'Backus', 'Johnson', 'van Rossum'];
-const CITIES: [string, string][] = [['Berlin', 'Germany'], ['London', 'UK'], ['New York', 'USA'], ['Chennai', 'India'], ['Tokyo', 'Japan'], ['São Paulo', 'Brazil'], ['Toronto', 'Canada']];
+const FIRST = [
+  'Ada',
+  'Alan',
+  'Grace',
+  'Linus',
+  'Margaret',
+  'Ken',
+  'Barbara',
+  'Dennis',
+  'Frances',
+  'Edsger',
+  'Radia',
+  'Tim',
+  'Hedy',
+  'John',
+  'Katherine',
+  'Guido',
+];
+const LAST = [
+  'Lovelace',
+  'Turing',
+  'Hopper',
+  'Torvalds',
+  'Hamilton',
+  'Thompson',
+  'Liskov',
+  'Ritchie',
+  'Allen',
+  'Dijkstra',
+  'Perlman',
+  'Berners-Lee',
+  'Lamarr',
+  'Backus',
+  'Johnson',
+  'van Rossum',
+];
+const CITIES: [string, string][] = [
+  ['Berlin', 'Germany'],
+  ['London', 'UK'],
+  ['New York', 'USA'],
+  ['Chennai', 'India'],
+  ['Tokyo', 'Japan'],
+  ['São Paulo', 'Brazil'],
+  ['Toronto', 'Canada'],
+];
 export const SKILLS = ['React', 'TypeScript', 'SQL', 'Go', 'Design', 'Negotiation', 'Excel', 'Python'];
 
 /** Deterministic pseudo-random generator so demos and tests are reproducible. */
@@ -31,7 +73,7 @@ function mulberry32(seed: number) {
 
 export function generateEmployees(count: number, seed = 42): Employee[] {
   const rand = mulberry32(seed);
-  const pick = <T,>(list: readonly T[]) => list[Math.floor(rand() * list.length)];
+  const pick = <T>(list: readonly T[]) => list[Math.floor(rand() * list.length)];
   const rows: Employee[] = new Array(count);
   for (let i = 0; i < count; i++) {
     const first = pick(FIRST);

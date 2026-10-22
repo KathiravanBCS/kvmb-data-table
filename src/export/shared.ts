@@ -59,10 +59,7 @@ function leafRows<TData extends RowData>(rows: Row<TData>[]): Row<TData>[] {
   return out;
 }
 
-export function resolveExportRows<TData extends RowData>(
-  table: Table<TData>,
-  scope: ExportRowScope = 'filtered',
-): Row<TData>[] {
+export function resolveExportRows<TData extends RowData>(table: Table<TData>, scope: ExportRowScope = 'filtered'): Row<TData>[] {
   switch (scope) {
     case 'all':
       return table.getCoreRowModel().flatRows;

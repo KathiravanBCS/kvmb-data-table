@@ -16,29 +16,32 @@ export function FilterChips<TData extends RowData>() {
   return (
     <Group gap={6} className="mdg-filter-chips">
       <Group gap={6} role="list" aria-label={labels.filters}>
-      {search && (
-        <div role="listitem">
-          <RemovableChip removeLabel={`${labels.removeFilter}: “${search}”`} onRemove={() => table.setGlobalFilter('')}>
-            “{search}”
-          </RemovableChip>
-        </div>
-      )}
-      {conditions.map((condition, index) => {
-        const column = table.getColumn(condition.field);
-        const text = describeCondition(condition, registry, column ? getColumnLabel(column) : condition.field);
-        return (
-          <Group key={condition.id} gap={6} role="listitem" wrap="nowrap">
-            {index > 0 && !nested && (
-              <span className="mdg-filter-logic">{filterModel.logic.toUpperCase()}</span>
-            )}
-            <RemovableChip removeLabel={`${labels.removeFilter}: ${text}`} onRemove={() => setFilterModel((prev) => removeFilterNode(prev, condition.id))}>
-              {text}
+        {search && (
+          <div role="listitem">
+            <RemovableChip removeLabel={`${labels.removeFilter}: “${search}”`} onRemove={() => table.setGlobalFilter('')}>
+              “{search}”
             </RemovableChip>
-          </Group>
-        );
-      })}
+          </div>
+        )}
+        {conditions.map((condition, index) => {
+          const column = table.getColumn(condition.field);
+          const text = describeCondition(condition, registry, column ? getColumnLabel(column) : condition.field);
+          return (
+            <Group key={condition.id} gap={6} role="listitem" wrap="nowrap">
+              {index > 0 && !nested && <span className="mdg-filter-logic">{filterModel.logic.toUpperCase()}</span>}
+              <RemovableChip
+                removeLabel={`${labels.removeFilter}: ${text}`}
+                onRemove={() => setFilterModel((prev) => removeFilterNode(prev, condition.id))}
+              >
+                {text}
+              </RemovableChip>
+            </Group>
+          );
+        })}
       </Group>
-      <Button color="gray" c="var(--mantine-color-text)"
+      <Button
+        color="gray"
+        c="var(--mantine-color-text)"
         size="compact-xs"
         variant="subtle"
         onClick={() => {

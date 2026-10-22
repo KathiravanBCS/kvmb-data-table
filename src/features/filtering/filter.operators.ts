@@ -1,9 +1,4 @@
-import type {
-  FilterOperator,
-  FilterOperatorDefinition,
-  FilterValue,
-  FilterVariant,
-} from './filter.types';
+import type { FilterOperator, FilterOperatorDefinition, FilterValue, FilterVariant } from './filter.types';
 
 export function isEmptyValue(value: unknown): boolean {
   if (value === null || value === undefined) return true;
@@ -76,11 +71,7 @@ const NUMBER: FilterVariant[] = ['number'];
 const DATE: FilterVariant[] = ['date'];
 const ALL: FilterVariant[] = ['text', 'number', 'date', 'boolean', 'select', 'multiSelect'];
 
-const textOp = (
-  operator: FilterOperator,
-  label: string,
-  test: (cell: string, filter: string) => boolean,
-): FilterOperatorDefinition => ({
+const textOp = (operator: FilterOperator, label: string, test: (cell: string, filter: string) => boolean): FilterOperatorDefinition => ({
   operator,
   label,
   variants: TEXT,
@@ -91,11 +82,7 @@ const textOp = (
   },
 });
 
-const numberOp = (
-  operator: FilterOperator,
-  label: string,
-  test: (cell: number, filter: number) => boolean,
-): FilterOperatorDefinition => ({
+const numberOp = (operator: FilterOperator, label: string, test: (cell: number, filter: number) => boolean): FilterOperatorDefinition => ({
   operator,
   label,
   variants: NUMBER,
@@ -109,11 +96,7 @@ const numberOp = (
   },
 });
 
-const dateOp = (
-  operator: FilterOperator,
-  label: string,
-  test: (cell: number, filter: number) => boolean,
-): FilterOperatorDefinition => ({
+const dateOp = (operator: FilterOperator, label: string, test: (cell: number, filter: number) => boolean): FilterOperatorDefinition => ({
   operator,
   label,
   variants: DATE,
@@ -127,9 +110,7 @@ const dateOp = (
   },
 });
 
-function between(
-  convert: (v: unknown) => number | null,
-): FilterOperatorDefinition['fn'] {
+function between(convert: (v: unknown) => number | null): FilterOperatorDefinition['fn'] {
   return (cellValue, filterValue) => {
     const [rawMin, rawMax] = asRange(filterValue);
     const min = convert(rawMin);
@@ -196,19 +177,14 @@ export const defaultOperatorByVariant: Record<FilterVariant, FilterOperator> = {
 
 export type FilterOperatorRegistry = ReadonlyMap<string, FilterOperatorDefinition>;
 
-export function createOperatorRegistry(
-  custom: readonly FilterOperatorDefinition[] = [],
-): FilterOperatorRegistry {
+export function createOperatorRegistry(custom: readonly FilterOperatorDefinition[] = []): FilterOperatorRegistry {
   const map = new Map<string, FilterOperatorDefinition>();
   for (const def of builtInFilterOperators) map.set(def.operator, def);
   for (const def of custom) map.set(def.operator, def);
   return map;
 }
 
-export function getOperatorsForVariant(
-  registry: FilterOperatorRegistry,
-  variant: FilterVariant,
-): FilterOperatorDefinition[] {
+export function getOperatorsForVariant(registry: FilterOperatorRegistry, variant: FilterVariant): FilterOperatorDefinition[] {
   return [...registry.values()].filter((def) => def.variants.includes(variant));
 }
 

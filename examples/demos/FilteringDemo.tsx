@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { Code, Stack } from '@mantine/core';
-import {
-  DataGrid,
-  createFilterCondition,
-  createFilterGroup,
-  type FilterGroup,
-  type FilterOperatorDefinition,
-} from '@kvmb/react-data-grid';
+import { DataGrid, createFilterCondition, createFilterGroup, type FilterGroup, type FilterOperatorDefinition } from '@kvmb/react-data-grid';
 import { employeeColumns } from '../columns';
 import { generateEmployees } from '../data';
 
@@ -46,7 +40,11 @@ export default function FilteringDemo() {
         onFilterModelChange={setModel}
         filterOperators={customOperators}
         defaultFilterPresets={[
-          { id: 'eng', name: 'Engineering only', model: { ...createFilterGroup('and'), children: [createFilterCondition('department', 'in', ['Engineering'])] } },
+          {
+            id: 'eng',
+            name: 'Engineering only',
+            model: { ...createFilterGroup('and'), children: [createFilterCondition('department', 'in', ['Engineering'])] },
+          },
         ]}
         height={380}
         aria-label="Filterable employees"

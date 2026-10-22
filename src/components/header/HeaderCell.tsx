@@ -87,7 +87,9 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
     const next = column.getNextSortingOrder();
     // Without an explicit direction TanStack cycles asc → desc → none.
     column.toggleSorting(undefined, multi && column.getCanMultiSort());
-    ctx.announce(next === 'asc' ? labels.sortedAscending(label) : next === 'desc' ? labels.sortedDescending(label) : labels.sortCleared(label));
+    ctx.announce(
+      next === 'asc' ? labels.sortedAscending(label) : next === 'desc' ? labels.sortedDescending(label) : labels.sortCleared(label),
+    );
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -202,14 +204,32 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
               <Menu.Dropdown onKeyDown={(e) => e.stopPropagation()}>
                 {sortable && (
                   <>
-                    <Menu.Item leftSection={<IconArrowUp size={14} />} onClick={() => { column.toggleSorting(false, false); ctx.announce(labels.sortedAscending(label)); }}>
+                    <Menu.Item
+                      leftSection={<IconArrowUp size={14} />}
+                      onClick={() => {
+                        column.toggleSorting(false, false);
+                        ctx.announce(labels.sortedAscending(label));
+                      }}
+                    >
                       {labels.sortAscending}
                     </Menu.Item>
-                    <Menu.Item leftSection={<IconArrowDown size={14} />} onClick={() => { column.toggleSorting(true, false); ctx.announce(labels.sortedDescending(label)); }}>
+                    <Menu.Item
+                      leftSection={<IconArrowDown size={14} />}
+                      onClick={() => {
+                        column.toggleSorting(true, false);
+                        ctx.announce(labels.sortedDescending(label));
+                      }}
+                    >
                       {labels.sortDescending}
                     </Menu.Item>
                     {sorted && (
-                      <Menu.Item leftSection={<IconX size={14} />} onClick={() => { column.clearSorting(); ctx.announce(labels.sortCleared(label)); }}>
+                      <Menu.Item
+                        leftSection={<IconX size={14} />}
+                        onClick={() => {
+                          column.clearSorting();
+                          ctx.announce(labels.sortCleared(label));
+                        }}
+                      >
                         {labels.clearSort}
                       </Menu.Item>
                     )}

@@ -41,11 +41,7 @@ import { createOperatorRegistry, type FilterOperatorRegistry } from '../features
 import { EMPTY_FILTER_MODEL, getActiveConditions } from '../features/filtering/filter.model';
 import { getAdvancedFilteredRowModel } from '../features/filtering/advancedFilteredRowModel';
 import { useGridEditing, type GridEditing } from '../features/editing/useGridEditing';
-import {
-  loadPersistedState,
-  savePersistedState,
-  type PersistedGridState,
-} from '../features/persistence/persistence';
+import { loadPersistedState, savePersistedState, type PersistedGridState } from '../features/persistence/persistence';
 import { exportToCsv } from '../export/csv';
 import type { ExcelExportOptions } from '../export/excel';
 import { createSelectColumn } from '../features/selection/selectColumn';
@@ -72,7 +68,9 @@ function stringifyForSearch(value: unknown): string {
 }
 
 const globalSearchFilterFn: FilterFn<unknown> = (row, columnId, filterValue) => {
-  const search = String(filterValue ?? '').trim().toLowerCase();
+  const search = String(filterValue ?? '')
+    .trim()
+    .toLowerCase();
   if (!search) return true;
   return stringifyForSearch(row.getValue(columnId)).toLowerCase().includes(search);
 };
@@ -157,7 +155,13 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
   };
   features.toolbar =
     props.enableToolbar ??
-    (features.globalFilter || features.filterBuilder || features.hiding || features.export || features.grouping || !!props.toolbarActions || !!props.renderToolbar);
+    (features.globalFilter ||
+      features.filterBuilder ||
+      features.hiding ||
+      features.export ||
+      features.grouping ||
+      !!props.toolbarActions ||
+      !!props.renderToolbar);
 
   // ---------------------------------------------------------------- state
   const [density, setDensity] = useControllableState<GridDensity>(
@@ -186,14 +190,10 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
     props.onFilterPresetsChange,
     () => persisted.filterPresets ?? props.defaultFilterPresets ?? [],
   );
-  const [pagination, setPaginationRaw] = useControllableState<PaginationState>(
-    props.pagination,
-    props.onPaginationChange,
-    () => ({
-      pageIndex: persisted.pagination?.pageIndex ?? props.defaultPagination?.pageIndex ?? 0,
-      pageSize: persisted.pagination?.pageSize ?? props.defaultPagination?.pageSize ?? props.pageSizeOptions?.[0] ?? DEFAULT_PAGE_SIZE,
-    }),
-  );
+  const [pagination, setPaginationRaw] = useControllableState<PaginationState>(props.pagination, props.onPaginationChange, () => ({
+    pageIndex: persisted.pagination?.pageIndex ?? props.defaultPagination?.pageIndex ?? 0,
+    pageSize: persisted.pagination?.pageSize ?? props.defaultPagination?.pageSize ?? props.pageSizeOptions?.[0] ?? DEFAULT_PAGE_SIZE,
+  }));
   const [rowSelection, setRowSelection] = useControllableState<RowSelectionState>(
     props.rowSelection,
     props.onRowSelectionChange,
@@ -457,7 +457,21 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
       });
     }, 300);
     return () => clearTimeout(handle);
-  }, [persistKey, persistOptionsRef, sorting, filterModel, globalFilter, presets, pagination, columnVisibility, columnOrder, columnSizing, columnPinning, grouping, density]);
+  }, [
+    persistKey,
+    persistOptionsRef,
+    sorting,
+    filterModel,
+    globalFilter,
+    presets,
+    pagination,
+    columnVisibility,
+    columnOrder,
+    columnSizing,
+    columnPinning,
+    grouping,
+    density,
+  ]);
 
   // ---------------------------------------------------------------- api
   const scrollToIndexRef = useRef<((index: number) => void) | null>(null);

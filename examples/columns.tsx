@@ -13,7 +13,7 @@ export const employeeColumns: ColumnDef<Employee>[] = [
     header: 'Department',
     meta: { filterVariant: 'select', filterOptions: options(DEPARTMENTS), editor: 'select' },
     cell: ({ getValue }) => (
-      <Badge variant="light" size="sm">
+      <Badge variant="default" size="sm">
         {getValue<string>()}
       </Badge>
     ),
@@ -24,7 +24,11 @@ export const employeeColumns: ColumnDef<Employee>[] = [
     header: 'Salary',
     size: 130,
     aggregationFn: 'mean',
-    aggregatedCell: ({ getValue }) => <Text size="sm" fw={600}>{currency.format(getValue<number>())}</Text>,
+    aggregatedCell: ({ getValue }) => (
+      <Text size="sm" fw={600}>
+        {currency.format(getValue<number>())}
+      </Text>
+    ),
     meta: {
       filterVariant: 'number',
       footerAggregation: true,
@@ -44,7 +48,12 @@ export const employeeColumns: ColumnDef<Employee>[] = [
     header: 'Skills',
     size: 220,
     enableSorting: false,
-    meta: { filterVariant: 'multiSelect', filterOptions: options(SKILLS), editor: 'multiSelect', exportValue: (_row, v) => (v as string[]).join('; ') },
+    meta: {
+      filterVariant: 'multiSelect',
+      filterOptions: options(SKILLS),
+      editor: 'multiSelect',
+      exportValue: (_row, v) => (v as string[]).join('; '),
+    },
     cell: ({ getValue }) => (
       <Group gap={4} wrap="nowrap">
         {getValue<string[]>().map((s) => (

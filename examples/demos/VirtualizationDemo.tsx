@@ -17,7 +17,11 @@ export default function VirtualizationDemo() {
   return (
     <Stack>
       <Group>
-        <SegmentedControl value={size} onChange={setSize} data={SIZES.map((s) => ({ value: s, label: `${Number(s).toLocaleString()} rows` }))} />
+        <SegmentedControl
+          value={size}
+          onChange={setSize}
+          data={SIZES.map((s) => ({ value: s, label: `${Number(s).toLocaleString()} rows` }))}
+        />
         <Text size="xs" c="dimmed">
           Generated in {ms.toFixed(0)} ms · only visible rows are in the DOM
         </Text>

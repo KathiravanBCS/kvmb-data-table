@@ -45,15 +45,24 @@ describe('pinning layout', () => {
 describe('server adapters', () => {
   const query = {
     pagination: { pageIndex: 2, pageSize: 25 },
-    sorting: [{ id: 'name', desc: false }, { id: 'salary', desc: true }],
-    filterModel: { ...createFilterGroup('and'), children: [createFilterCondition('name', 'contains', 'an'), createFilterCondition('salary', 'gt', '')] },
+    sorting: [
+      { id: 'name', desc: false },
+      { id: 'salary', desc: true },
+    ],
+    filterModel: {
+      ...createFilterGroup('and'),
+      children: [createFilterCondition('name', 'contains', 'an'), createFilterCondition('salary', 'gt', '')],
+    },
     globalFilter: '  smith ',
   };
 
   it('normalises the query', () => {
     const q = toServerQuery(query);
     expect(q).toMatchObject({ page: 3, pageSize: 25, offset: 50, limit: 25, search: 'smith' });
-    expect(q.sort).toEqual([{ field: 'name', direction: 'asc' }, { field: 'salary', direction: 'desc' }]);
+    expect(q.sort).toEqual([
+      { field: 'name', direction: 'asc' },
+      { field: 'salary', direction: 'desc' },
+    ]);
     expect(q.filter?.children).toHaveLength(1);
   });
 

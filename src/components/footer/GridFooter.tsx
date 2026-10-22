@@ -35,7 +35,17 @@ export function hasFooter<TData extends RowData>(table: Table<TData>): boolean {
   return table.getAllLeafColumns().some((c) => c.columnDef.footer || c.columnDef.meta?.footerAggregation);
 }
 
-export function GridFooter<TData extends RowData>({ table, layout, fill, ariaRowIndex, labels, className, cellClassName, style, cellStyle }: GridFooterProps<TData>) {
+export function GridFooter<TData extends RowData>({
+  table,
+  layout,
+  fill,
+  ariaRowIndex,
+  labels,
+  className,
+  cellClassName,
+  style,
+  cellStyle,
+}: GridFooterProps<TData>) {
   const footerGroups = table.getFooterGroups();
   const leafFooters = footerGroups[0]?.headers ?? [];
   const byColumn = new Map<string, Header<TData, unknown>>(leafFooters.map((h) => [h.column.id, h]));

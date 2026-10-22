@@ -95,7 +95,11 @@ function isRawSheet<TData extends RowData>(sheet: ExcelTableSheet<TData> | Excel
 
 /** Excel sheet names: max 31 chars, no `[]:*?/\`, unique. */
 export function sanitizeSheetName(name: string, used: Set<string>): string {
-  let base = name.replace(/[[\]:*?/\\]/g, ' ').trim().slice(0, 31) || 'Sheet';
+  let base =
+    name
+      .replace(/[[\]:*?/\\]/g, ' ')
+      .trim()
+      .slice(0, 31) || 'Sheet';
   let candidate = base;
   let i = 2;
   while (used.has(candidate.toLowerCase())) {
@@ -210,7 +214,12 @@ function addTableSheet<TData extends RowData>(
 
 function addRawSheet(workbook: Workbook, name: string, spec: ExcelRawSheet, headerStyle: ExcelHeaderStyle) {
   const sheet = workbook.addWorksheet(name, { views: [{ state: 'frozen', ySplit: 1 }] });
-  sheet.columns = spec.columns.map((c) => ({ key: c.key, header: c.header, width: c.width ?? 16, style: c.numberFormat ? { numFmt: c.numberFormat } : {} }));
+  sheet.columns = spec.columns.map((c) => ({
+    key: c.key,
+    header: c.header,
+    width: c.width ?? 16,
+    style: c.numberFormat ? { numFmt: c.numberFormat } : {},
+  }));
   for (const row of spec.data) {
     const values: Record<string, unknown> = {};
     for (const c of spec.columns) values[c.key] = normalizeCellValue(row[c.key], false);

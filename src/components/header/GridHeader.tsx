@@ -20,14 +20,19 @@ function mergeHeaderGroups<TData extends RowData>(table: Table<TData>): Header<T
   const left = table.getLeftHeaderGroups();
   const center = table.getCenterHeaderGroups();
   const right = table.getRightHeaderGroups();
-  return center.map((group: HeaderGroup<TData>, i) => [
-    ...(left[i]?.headers ?? []),
-    ...group.headers,
-    ...(right[i]?.headers ?? []),
-  ]);
+  return center.map((group: HeaderGroup<TData>, i) => [...(left[i]?.headers ?? []), ...group.headers, ...(right[i]?.headers ?? [])]);
 }
 
-export function GridHeader<TData extends RowData>({ table, layout, fill, focusedCol, sortableColumns, classNames, styles, sticky }: GridHeaderProps<TData>) {
+export function GridHeader<TData extends RowData>({
+  table,
+  layout,
+  fill,
+  focusedCol,
+  sortableColumns,
+  classNames,
+  styles,
+  sticky,
+}: GridHeaderProps<TData>) {
   const rows = mergeHeaderGroups(table);
   const leafIndex = rows.length - 1;
   const centerIds = layout.filter((l) => !l.pinned).map((l) => l.id);
@@ -39,9 +44,7 @@ export function GridHeader<TData extends RowData>({ table, layout, fill, focused
         // Group header rows compute their own layout from header sizes (colSpan aware).
         const rowLayout = isLeafRow
           ? layout
-          : computeColumnLayout(
-              headers.map((h) => ({ id: h.id, size: h.getSize(), pinned: h.column.getIsPinned() })),
-            );
+          : computeColumnLayout(headers.map((h) => ({ id: h.id, size: h.getSize(), pinned: h.column.getIsPinned() })));
         const cells = headers.map((header, i) => (
           <HeaderCell
             key={header.id}
@@ -57,7 +60,14 @@ export function GridHeader<TData extends RowData>({ table, layout, fill, focused
           />
         ));
         return (
-          <div key={depth} role="row" aria-rowindex={depth + 1} className={classNames.headerRow} style={styles.headerRow} data-leaf={isLeafRow || undefined}>
+          <div
+            key={depth}
+            role="row"
+            aria-rowindex={depth + 1}
+            className={classNames.headerRow}
+            style={styles.headerRow}
+            data-leaf={isLeafRow || undefined}
+          >
             {isLeafRow && sortableColumns ? (
               <SortableContext items={centerIds} strategy={horizontalListSortingStrategy}>
                 {cells}
