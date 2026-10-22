@@ -18,6 +18,7 @@ export interface RowHandlers<TData extends RowData> {
   renderGroupHeader?: (row: Row<TData>) => ReactNode;
   getRowClassName?: (row: Row<TData>) => string | undefined;
   getRowStyle?: (row: Row<TData>) => CSSProperties | undefined;
+  canDragRow?: (row: Row<TData>) => boolean;
 }
 
 export interface GridRowProps<TData extends RowData> {
@@ -153,7 +154,7 @@ function RowInner<TData extends RowData>(props: GridRowProps<TData> & { dragBind
 type SortableBindings = NonNullable<React.ContextType<typeof DragHandleContext>>;
 
 function SortableRow<TData extends RowData>(props: GridRowProps<TData>) {
-  const disabled = props.dragDisabled || props.row.getIsGrouped();
+  const disabled = props.dragDisabled || props.row.getIsGrouped() || props.handlers.canDragRow?.(props.row) === false;
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
     id: props.row.id,
     data: { type: 'row' },

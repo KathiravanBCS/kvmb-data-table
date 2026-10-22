@@ -162,8 +162,9 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
         : undefined,
       getRowClassName: props.getRowClassName ? (row) => latest.current.props.getRowClassName?.(row) : undefined,
       getRowStyle: props.getRowStyle ? (row) => latest.current.props.getRowStyle?.(row) : undefined,
+      canDragRow: props.canDragRow ? (row) => latest.current.props.canDragRow?.(row) ?? true : undefined,
     }),
-    [latest, !!props.renderGroupHeader, !!props.getRowClassName, !!props.getRowStyle], // eslint-disable-line react-hooks/exhaustive-deps
+    [latest, !!props.renderGroupHeader, !!props.getRowClassName, !!props.getRowStyle, !!props.canDragRow], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   // ---------------------------------------------------------------- styles

@@ -80,7 +80,7 @@
     "test:e2e": "playwright test",
     "test:package": "node scripts/verify-package.mjs",
     "check:exports": "publint && attw --pack . --profile node16 --exclude-entrypoints styles.css",
-    "playground": "vite --config examples/vite.config.ts",
+    "playground": "vite --config docs/vite.config.ts",
     "docs:dev": "vite --config docs/vite.config.ts",
     "docs:build": "vite build --config docs/vite.config.ts",
     "bench": "vitest bench --run",

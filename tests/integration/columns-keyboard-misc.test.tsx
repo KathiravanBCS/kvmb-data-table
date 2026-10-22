@@ -92,6 +92,12 @@ describe('column management', () => {
     expect(screen.getByRole('button', { name: 'Drag to reorder column: Salary' })).toHaveAttribute('aria-roledescription', 'sortable');
   });
 
+  it('honours canDragRow', () => {
+    renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableRowDragging canDragRow={(row) => row.original.active} onRowReorder={() => {}} />);
+    const handles = screen.getAllByRole('button', { name: 'Drag to reorder row' });
+    expect(handles.map((h) => (h as HTMLButtonElement).disabled)).toEqual([false, true, false, false, true]);
+  });
+
   it('renders row drag handles and disables them while sorted', async () => {
     const user = userEvent.setup();
     renderWithMantine(<DataGrid data={employees} columns={employeeColumns} enableRowDragging onRowReorder={() => {}} />);
