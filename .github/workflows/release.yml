@@ -1,0 +1,36 @@
+name: Release
+
+# Publishing never happens automatically: this workflow only runs when started
+# by hand, and the `npm-publish` environment should require reviewer approval.
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Run every check and `npm publish --dry-run` only
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run lint && npm run typecheck && npm test && npm run test:types
+      - run: npm run build
+      - run: npm run check:exports
+      - run: npm run test:package
+      - run: npm publish --access public --provenance ${{ inputs.dry-run && '--dry-run' || '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
