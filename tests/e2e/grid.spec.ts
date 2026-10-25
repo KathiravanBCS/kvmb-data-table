@@ -141,11 +141,11 @@ test('server-side mode fetches pages, sorts and searches', async ({ page }) => {
   await openPage(page, 'server-side');
   await expect(page.getByText(/of 25,000/)).toBeVisible();
   await page.getByRole('button', { name: 'Next page' }).click();
-  await expect(page.locator('.docs-demo pre')).toContainText('page=2');
+  await expect(page.locator('.docs-demo-preview pre')).toContainText('page=2');
   await grid(page).locator('[role="columnheader"][data-column-id="salary"]').click();
-  await expect(page.locator('.docs-demo pre')).toContainText('sort=salary:asc');
+  await expect(page.locator('.docs-demo-preview pre')).toContainText('sort=salary:asc');
   await page.getByRole('searchbox', { name: 'Search all columns' }).fill('lovelace');
-  await expect(page.locator('.docs-demo pre')).toContainText('search=lovelace');
+  await expect(page.locator('.docs-demo-preview pre')).toContainText('search=lovelace');
   await expect.poll(async () => (await bodyColumn(page, 'name')).every((n) => n.toLowerCase().includes('lovelace'))).toBe(true);
 });
 
