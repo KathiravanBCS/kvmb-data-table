@@ -62,7 +62,8 @@ jobs:
           cache: npm
       - run: npm install -g npm@11
       - run: npm ci
-      - run: npm install --no-save @mantine/core@9 @mantine/hooks@9 @mantine/dates@9
+      # Every @mantine/* package must move together: they pin each other's exact version.
+      - run: npm install --no-save @mantine/core@9 @mantine/hooks@9 @mantine/dates@9 @mantine/code-highlight@9
       - run: npm run typecheck
       - run: npm test
 
