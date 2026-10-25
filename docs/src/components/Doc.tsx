@@ -1,12 +1,22 @@
-import { Suspense, useState, type ComponentType, type ReactNode } from 'react';
-import { ActionIcon, Box, Code, CopyButton, Group, Loader, Paper, Stack, Table, Tabs, Text, Title, Tooltip } from '@mantine/core';
-import { IconCheck, IconCode, IconCopy, IconEye } from '@tabler/icons-react';
+import { Suspense, type ComponentType, type ReactNode } from 'react';
+import { Box, Code, Loader, Stack, Table, Text, Title } from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+
+/** URL-safe id for a heading, used by the table of contents. */
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
 
 export function Page({ title, intro, children }: { title: string; intro?: ReactNode; children: ReactNode }) {
   return (
-    <Stack gap="lg" className="docs-prose" maw={1100}>
+    <Stack gap="xl" className="docs-prose">
       <div>
-        <Title order={1}>{title}</Title>
+        <Title order={1} className="docs-page-title">
+          {title}
+        </Title>
         {intro && (
           <Text c="dimmed" mt="xs" size="lg">
             {intro}
@@ -20,8 +30,8 @@ export function Page({ title, intro, children }: { title: string; intro?: ReactN
 
 export function Section({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
   return (
-    <Stack gap="sm" component="section" id={id}>
-      <Title order={2} size="h3">
+    <Stack gap="sm" component="section">
+      <Title order={2} size="h3" id={id ?? slugify(title)} data-toc={title} className="docs-section-title">
         {title}
       </Title>
       {children}
@@ -29,58 +39,53 @@ export function Section({ title, children, id }: { title: string; children: Reac
   );
 }
 
-export function CodeBlock({ code, language = 'tsx' }: { code: string; language?: string }) {
+/** Long snippets start collapsed with an "Expand code" button, like mantine.dev. */
+const COLLAPSE_AFTER_LINES = 18;
+
+export function CodeBlock({ code, language = 'tsx', expandable }: { code: string; language?: string; expandable?: boolean }) {
+  const trimmed = code.trim();
+  const long = expandable ?? trimmed.split('\n').length > COLLAPSE_AFTER_LINES;
   return (
-    <Box className="docs-code">
-      <CopyButton value={code.trim()}>
-        {({ copied, copy }) => (
-          <Tooltip label={copied ? 'Copied' : 'Copy'} withinPortal>
-            <ActionIcon
-              variant="default"
-              size="sm"
-              onClick={copy}
-              aria-label="Copy code"
-              style={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
-            >
-              {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </CopyButton>
-      <Code block data-language={language}>
-        {code.trim()}
-      </Code>
-    </Box>
+    <CodeHighlight
+      className="docs-code"
+      code={trimmed}
+      language={language}
+      radius="md"
+      withBorder
+      withExpandButton={long}
+      defaultExpanded={!long}
+      maxCollapsedHeight={320}
+      expandCodeLabel="Expand code"
+      collapseCodeLabel="Collapse code"
+    />
   );
 }
 
-/** Live demo with a "Code" tab showing the exact source file that is running. */
+/** Live demo with the exact source file that is running shown underneath it. */
 export function Demo({ component: Component, code, title }: { component: ComponentType; code: string; title?: string }) {
-  const [tab, setTab] = useState<string | null>('preview');
   return (
-    <Paper className="docs-demo" withBorder={false}>
-      <Tabs value={tab} onChange={setTab} keepMounted={false}>
-        <Group justify="space-between" mb="sm">
-          {title ? <Text fw={600}>{title}</Text> : <span />}
-          <Tabs.List>
-            <Tabs.Tab value="preview" leftSection={<IconEye size={14} />}>
-              Preview
-            </Tabs.Tab>
-            <Tabs.Tab value="code" leftSection={<IconCode size={14} />}>
-              Code
-            </Tabs.Tab>
-          </Tabs.List>
-        </Group>
-        <Tabs.Panel value="preview">
-          <Suspense fallback={<Loader size="sm" />}>
-            <Component />
-          </Suspense>
-        </Tabs.Panel>
-        <Tabs.Panel value="code">
-          <CodeBlock code={code} />
-        </Tabs.Panel>
-      </Tabs>
-    </Paper>
+    <Box className="docs-demo">
+      {title && (
+        <Text fw={600} px="md" pt="md">
+          {title}
+        </Text>
+      )}
+      <div className="docs-demo-preview">
+        <Suspense fallback={<Loader size="sm" />}>
+          <Component />
+        </Suspense>
+      </div>
+      <CodeHighlight
+        className="docs-demo-code"
+        code={code.trim()}
+        language="tsx"
+        withExpandButton
+        defaultExpanded={false}
+        maxCollapsedHeight={200}
+        expandCodeLabel="Show code"
+        collapseCodeLabel="Hide code"
+      />
+    </Box>
   );
 }
 

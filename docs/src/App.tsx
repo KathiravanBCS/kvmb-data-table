@@ -2,6 +2,7 @@ import { useEffect, useState, type ComponentType } from 'react';
 import {
   ActionIcon,
   AppShell,
+  Badge,
   Burger,
   Group,
   NavLink,
@@ -33,6 +34,7 @@ import {
   VirtualizationPage,
 } from './pages/FeaturePages';
 import { ApiPage, MigrationPage, TroubleshootingPage } from './pages/ReferencePages';
+import { TableOfContents } from './components/TableOfContents';
 
 interface PageEntry {
   slug: string;
@@ -98,7 +100,7 @@ export function App() {
   }, [page.label]);
 
   return (
-    <AppShell header={{ height: 56 }} navbar={{ width: 260, breakpoint: 'sm', collapsed: { mobile: !opened } }} padding="lg">
+    <AppShell header={{ height: 60 }} navbar={{ width: 280, breakpoint: 'sm', collapsed: { mobile: !opened } }} padding="xl">
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group gap="xs">
@@ -107,9 +109,9 @@ export function App() {
             <Title order={4} component="span">
               @kvmb/react-data-grid
             </Title>
-            <Text size="xs" c="dimmed" visibleFrom="xs">
+            <Badge variant="default" radius="sm" visibleFrom="xs">
               v0.1.0
-            </Text>
+            </Badge>
           </Group>
           <Group gap="xs">
             <Tooltip label={`Switch to ${scheme === 'dark' ? 'light' : 'dark'} mode`}>
@@ -135,11 +137,11 @@ export function App() {
           </Group>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="xs" aria-label="Documentation">
-        <ScrollArea type="auto">
+      <AppShell.Navbar aria-label="Documentation" className="docs-navbar">
+        <ScrollArea type="hover" scrollbarSize={6} px="md" py="sm" h="100%">
           {sections.map((section) => (
             <div key={section.label}>
-              <Text size="xs" fw={700} c="dimmed" tt="uppercase" px="sm" mt="md" mb={4}>
+              <Text fw={700} size="sm" px="sm" mt="lg" mb={6} className="docs-nav-section">
                 {section.label}
               </Text>
               {section.pages.map((p) => (
@@ -158,7 +160,12 @@ export function App() {
         </ScrollArea>
       </AppShell.Navbar>
       <AppShell.Main>
-        <Current key={page.slug} />
+        <div className="docs-layout">
+          <div className="docs-content">
+            <Current key={page.slug} />
+          </div>
+          <TableOfContents pageKey={page.slug} />
+        </div>
       </AppShell.Main>
     </AppShell>
   );

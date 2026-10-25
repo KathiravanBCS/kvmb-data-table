@@ -1,27 +1,266 @@
+/* ------------------------------------------------------------------ thin scrollbars */
+
+/* Applies to the page, code blocks and the demo grids (Firefox + Chromium/Safari). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--docs-scrollbar) transparent;
+}
+
+:root {
+  --docs-scrollbar: var(--mantine-color-gray-4);
+  --docs-scrollbar-hover: var(--mantine-color-gray-5);
+}
+
+[data-mantine-color-scheme='dark'] {
+  --docs-scrollbar: var(--mantine-color-dark-3);
+  --docs-scrollbar-hover: var(--mantine-color-dark-2);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--docs-scrollbar);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--docs-scrollbar-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.docs-layout {
+  display: flex;
+  gap: 48px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.docs-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .docs-prose p,
 .docs-prose li {
   line-height: 1.65;
 }
 
-.docs-demo {
-  border: 1px solid var(--mantine-color-default-border);
+.docs-page-title {
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+}
+
+.docs-section-title {
+  /* Keeps headings visible below the sticky header after TOC navigation. */
+  scroll-margin-top: 80px;
+  outline: none;
+}
+
+/* ------------------------------------------------------------------ navbar */
+
+.docs-navbar {
+  border-inline-end: 1px solid var(--mantine-color-default-border);
+}
+
+.docs-nav-section {
+  color: var(--mantine-color-text);
+}
+
+.docs-nav-link {
   border-radius: var(--mantine-radius-md);
-  padding: var(--mantine-spacing-md);
-  background: var(--mantine-color-body);
-}
-
-.docs-code {
-  position: relative;
-}
-
-.docs-code pre {
-  margin: 0;
-  max-height: 520px;
-  overflow: auto;
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: var(--mantine-font-size-sm);
 }
 
 .docs-nav-link[data-active] {
   font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ table of contents */
+
+.docs-toc {
+  width: 240px;
+  flex: none;
+  position: sticky;
+  top: calc(var(--app-shell-header-height, 60px) + var(--mantine-spacing-xl));
+  align-self: flex-start;
+  max-height: calc(100vh - var(--app-shell-header-height, 60px) - 48px);
+  overflow-y: auto;
+}
+
+.docs-toc-list {
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--mantine-color-default-border);
+}
+
+.docs-toc-link {
+  display: block;
+  padding: 6px 12px;
+  margin-inline-start: -1px;
+  border-inline-start: 2px solid transparent;
+  border-radius: 0 var(--mantine-radius-sm) var(--mantine-radius-sm) 0;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-text);
+  line-height: 1.4;
+}
+
+.docs-toc-link:hover {
+  background: var(--mantine-color-default-hover);
+}
+
+.docs-toc-link[data-active] {
+  border-inline-start-color: var(--mantine-primary-color-filled);
+  background: var(--mantine-primary-color-light);
+  color: var(--mantine-primary-color-light-color);
+  font-weight: 500;
+}
+
+@media (max-width: 1199px) {
+  .docs-toc {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ demos & code */
+
+.docs-demo {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-body);
+  overflow: hidden;
+}
+
+.docs-demo-preview {
+  padding: var(--mantine-spacing-lg);
+}
+
+.docs-demo-code {
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+
+.docs-code,
+.docs-demo-code {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Syntax colors (highlight.js classes). Light theme close to mantine.dev / GitHub light. */
+.hljs {
+  color: var(--mantine-color-gray-9);
+}
+.hljs-comment,
+.hljs-quote {
+  color: var(--mantine-color-gray-6);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-meta .hljs-keyword,
+.hljs-doctag {
+  color: #cf222e;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-template-tag,
+.hljs-meta .hljs-string {
+  color: #0a3069;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #8250df;
+}
+.hljs-title.class_,
+.hljs-type,
+.hljs-built_in {
+  color: #953800;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-symbol,
+.hljs-bullet {
+  color: #0550ae;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-property,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-params {
+  color: #0550ae;
+}
+.hljs-name,
+.hljs-tag,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #116329;
+}
+.hljs-meta {
+  color: #6e7781;
+}
+
+/* Dark theme close to GitHub dark. */
+[data-mantine-color-scheme='dark'] .hljs {
+  color: #e6edf3;
+}
+[data-mantine-color-scheme='dark'] .hljs-comment,
+[data-mantine-color-scheme='dark'] .hljs-quote {
+  color: #8b949e;
+}
+[data-mantine-color-scheme='dark'] .hljs-keyword,
+[data-mantine-color-scheme='dark'] .hljs-selector-tag,
+[data-mantine-color-scheme='dark'] .hljs-meta .hljs-keyword,
+[data-mantine-color-scheme='dark'] .hljs-doctag {
+  color: #ff7b72;
+}
+[data-mantine-color-scheme='dark'] .hljs-string,
+[data-mantine-color-scheme='dark'] .hljs-regexp,
+[data-mantine-color-scheme='dark'] .hljs-template-tag,
+[data-mantine-color-scheme='dark'] .hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+[data-mantine-color-scheme='dark'] .hljs-title,
+[data-mantine-color-scheme='dark'] .hljs-title.function_,
+[data-mantine-color-scheme='dark'] .hljs-section {
+  color: #d2a8ff;
+}
+[data-mantine-color-scheme='dark'] .hljs-title.class_,
+[data-mantine-color-scheme='dark'] .hljs-type,
+[data-mantine-color-scheme='dark'] .hljs-built_in {
+  color: #ffa657;
+}
+[data-mantine-color-scheme='dark'] .hljs-number,
+[data-mantine-color-scheme='dark'] .hljs-literal,
+[data-mantine-color-scheme='dark'] .hljs-symbol,
+[data-mantine-color-scheme='dark'] .hljs-bullet,
+[data-mantine-color-scheme='dark'] .hljs-attr,
+[data-mantine-color-scheme='dark'] .hljs-attribute,
+[data-mantine-color-scheme='dark'] .hljs-property,
+[data-mantine-color-scheme='dark'] .hljs-variable,
+[data-mantine-color-scheme='dark'] .hljs-template-variable,
+[data-mantine-color-scheme='dark'] .hljs-params {
+  color: #79c0ff;
+}
+[data-mantine-color-scheme='dark'] .hljs-name,
+[data-mantine-color-scheme='dark'] .hljs-tag,
+[data-mantine-color-scheme='dark'] .hljs-selector-id,
+[data-mantine-color-scheme='dark'] .hljs-selector-class {
+  color: #7ee787;
+}
+[data-mantine-color-scheme='dark'] .hljs-meta {
+  color: #8b949e;
 }
