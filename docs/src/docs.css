@@ -77,7 +77,37 @@
 }
 
 .docs-nav-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: var(--mantine-spacing-md);
+  margin-bottom: 4px;
+  padding: 6px var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
   color: var(--mantine-color-text);
+}
+
+.docs-nav-section:hover {
+  background: var(--mantine-color-default-hover);
+}
+
+.docs-nav-section:focus-visible {
+  outline: 2px solid var(--mantine-primary-color-filled);
+  outline-offset: -2px;
+}
+
+.docs-nav-chevron {
+  flex: none;
+  transition: transform 150ms ease;
+}
+
+.docs-nav-section[data-collapsed] .docs-nav-chevron {
+  transform: rotate(-90deg);
+}
+
+.docs-nav-link {
+  padding-inline-start: calc(var(--mantine-spacing-sm) + 20px);
 }
 
 .docs-nav-link {

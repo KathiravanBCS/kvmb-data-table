@@ -3,18 +3,28 @@ import {
   ActionIcon,
   AppShell,
   Badge,
-  Burger,
   Group,
   NavLink,
   ScrollArea,
   Text,
   Title,
   Tooltip,
+  UnstyledButton,
+  em,
   useComputedColorScheme,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { IconBrandGithub, IconMoon, IconSun, IconTable } from '@tabler/icons-react';
+import { useHotkeys, useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import {
+  IconBrandGithub,
+  IconChevronDown,
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand,
+  IconMoon,
+  IconSun,
+  IconTable,
+} from '@tabler/icons-react';
 import { GettingStartedPage } from './pages/GettingStarted';
 import {
   AccessibilityPage,
@@ -77,11 +87,23 @@ const sections: { label: string; pages: PageEntry[] }[] = [
 ];
 
 const allPages = sections.flatMap((s) => s.pages);
+const sectionId = (label: string) => `docs-nav-${label.toLowerCase().replace(/\W+/g, '-')}`;
 const readSlug = () => window.location.hash.replace(/^#\/?/, '') || 'getting-started';
 
 export function App() {
   const [slug, setSlug] = useState(readSlug);
-  const [opened, { toggle, close }] = useDisclosure();
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${em(theme.breakpoints.sm)})`) ?? false;
+  // Mobile: drawer closed by default. Desktop: sidebar shown unless the reader hid it.
+  const [mobileOpened, setMobileOpened] = useState(false);
+  const [desktopHidden, setDesktopHidden] = useLocalStorage({ key: 'docs-nav-hidden', defaultValue: false });
+  const [collapsedSections, setCollapsedSections] = useLocalStorage<string[]>({ key: 'docs-nav-collapsed', defaultValue: [] });
+  const navVisible = mobile ? mobileOpened : !desktopHidden;
+  const toggleNav = () => (mobile ? setMobileOpened((o) => !o) : setDesktopHidden((h) => !h));
+  const close = () => setMobileOpened(false);
+  const toggleSection = (label: string) =>
+    setCollapsedSections((list) => (list.includes(label) ? list.filter((l) => l !== label) : [...list, label]));
+  useHotkeys([['mod+B', toggleNav]]);
   const { toggleColorScheme } = useMantineColorScheme();
   const scheme = useComputedColorScheme('light');
 
@@ -101,12 +123,37 @@ export function App() {
     document.title = `${page.label} · React Data Grid for Mantine`;
   }, [page.label]);
 
+  // Navigating to a page inside a collapsed section opens that section.
+  const currentSection = sections.find((sec) => sec.pages.includes(page))?.label;
+  useEffect(() => {
+    if (currentSection) setCollapsedSections((list) => (list.includes(currentSection) ? list.filter((l) => l !== currentSection) : list));
+  }, [currentSection, setCollapsedSections]);
+
+  const navLabel = `${navVisible ? 'Hide' : 'Show'} navigation`;
+
   return (
-    <AppShell header={{ height: 60 }} navbar={{ width: 280, breakpoint: 'sm', collapsed: { mobile: !opened } }} padding="xl">
+    <AppShell
+      header={{ height: 60 }}
+      navbar={{ width: 280, breakpoint: 'sm', collapsed: { mobile: !mobileOpened, desktop: desktopHidden } }}
+      padding="xl"
+      transitionDuration={150}
+    >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group gap="xs">
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" aria-label="Toggle navigation" />
+            <Tooltip label={`${navLabel} (Ctrl+B)`} position="bottom-start">
+              <ActionIcon
+                variant="default"
+                size="lg"
+                onClick={toggleNav}
+                aria-label={navLabel}
+                aria-expanded={navVisible}
+                aria-controls="docs-navigation"
+                data-testid="nav-toggle"
+              >
+                {navVisible ? <IconLayoutSidebarLeftCollapse size={18} /> : <IconLayoutSidebarLeftExpand size={18} />}
+              </ActionIcon>
+            </Tooltip>
             <IconTable size={22} aria-hidden />
             <Title order={4} component="span">
               @kvmb/react-data-grid
@@ -139,26 +186,43 @@ export function App() {
           </Group>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar aria-label="Documentation" className="docs-navbar">
+      <AppShell.Navbar id="docs-navigation" aria-label="Documentation" className="docs-navbar">
         <ScrollArea type="hover" scrollbarSize={6} px="md" py="sm" h="100%">
-          {sections.map((section) => (
-            <div key={section.label}>
-              <Text fw={700} size="sm" px="sm" mt="lg" mb={6} className="docs-nav-section">
-                {section.label}
-              </Text>
-              {section.pages.map((p) => (
-                <NavLink
-                  key={p.slug}
-                  href={`#/${p.slug}`}
-                  label={p.label}
-                  active={p.slug === page.slug}
-                  className="docs-nav-link"
-                  onClick={close}
-                  aria-current={p.slug === page.slug ? 'page' : undefined}
-                />
-              ))}
-            </div>
-          ))}
+          {sections.map((section) => {
+            const open = !collapsedSections.includes(section.label);
+            const id = sectionId(section.label);
+            return (
+              <div key={section.label}>
+                <UnstyledButton
+                  className="docs-nav-section"
+                  onClick={() => toggleSection(section.label)}
+                  aria-expanded={open}
+                  aria-controls={open ? id : undefined}
+                  data-collapsed={!open || undefined}
+                >
+                  <IconChevronDown size={14} className="docs-nav-chevron" aria-hidden />
+                  <Text component="span" fw={700} size="sm">
+                    {section.label}
+                  </Text>
+                </UnstyledButton>
+                {open && (
+                  <div id={id}>
+                    {section.pages.map((p) => (
+                      <NavLink
+                        key={p.slug}
+                        href={`#/${p.slug}`}
+                        label={p.label}
+                        active={p.slug === page.slug}
+                        className="docs-nav-link"
+                        onClick={close}
+                        aria-current={p.slug === page.slug ? 'page' : undefined}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </ScrollArea>
       </AppShell.Navbar>
       <AppShell.Main>
