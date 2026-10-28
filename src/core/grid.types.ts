@@ -21,6 +21,7 @@ import type { PersistStateOptions } from '../features/persistence/persistence';
 import type { DataGridLabels } from './grid.defaults';
 import type { CsvExportOptions, CsvExportResult } from '../export/csv';
 import type { ExcelExportOptions, ExcelExportResult } from '../export/excel';
+import type { ClipboardCopyOptions, ClipboardCopyResult } from '../export/clipboard';
 
 export type GridDensity = 'compact' | 'standard' | 'comfortable';
 
@@ -81,6 +82,11 @@ export interface GroupHeaderContext<TData extends RowData> {
   count: number;
 }
 
+export interface DetailPanelContext<TData extends RowData> {
+  row: Row<TData>;
+  table: Table<TData>;
+}
+
 export interface EmptyStateContext {
   /** True when rows exist but none pass the filters. */
   filtered: boolean;
@@ -112,6 +118,11 @@ export interface DataGridApi<TData extends RowData> {
   focusCell: (rowIndex: number, columnId: string) => void;
   exportCsv: (options?: CsvExportOptions<TData>) => CsvExportResult;
   exportExcel: (options?: ExcelExportOptions<TData>) => Promise<ExcelExportResult>;
+  /** Copies rows as tab-separated text (pastes into Excel / Google Sheets as cells). */
+  copyToClipboard: (options?: ClipboardCopyOptions<TData>) => Promise<ClipboardCopyResult>;
+  /** Expands every group, tree node and detail panel. */
+  expandAll: () => void;
+  collapseAll: () => void;
 }
 
 /** Feature toggles accepted as top-level boolean props. */
@@ -148,6 +159,11 @@ export interface DataGridProps<TData extends RowData> extends DataGridFeaturePro
   getRowId?: (row: TData, index: number, parent?: Row<TData>) => string;
   /** Sub rows for tree data / server-provided groups. */
   getSubRows?: (row: TData, index: number) => TData[] | undefined;
+  /**
+   * Column that shows the tree expander and indentation for `getSubRows` data.
+   * Defaults to the first visible data column.
+   */
+  treeColumnId?: string;
 
   /* ---------- Layout ---------- */
   /** Fixed height of the scroll area. Required for virtualization. */
@@ -249,6 +265,15 @@ export interface DataGridProps<TData extends RowData> extends DataGridFeaturePro
   /** Data is already grouped by the server (use with `getSubRows`). */
   manualGrouping?: boolean;
   renderGroupHeader?: (ctx: GroupHeaderContext<TData>) => ReactNode;
+
+  /* ---------- Master / detail ---------- */
+  /**
+   * Content shown in a full-width panel below an expanded row. Adds an expand
+   * column on the left. Rows with sub rows expand to their children instead.
+   */
+  renderDetailPanel?: (ctx: DetailPanelContext<TData>) => ReactNode;
+  /** Which rows can expand. Defaults to every row with `renderDetailPanel`, else rows with sub rows. */
+  getRowCanExpand?: (row: Row<TData>) => boolean;
 
   /* ---------- Editing ---------- */
   editMode?: EditMode;

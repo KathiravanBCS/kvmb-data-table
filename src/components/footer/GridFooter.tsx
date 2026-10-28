@@ -18,12 +18,20 @@ export interface GridFooterProps<TData extends RowData> {
   cellStyle?: CSSProperties;
 }
 
-/** Computes a column's aggregation over all filtered (pre-pagination) leaf rows. */
-export function computeColumnAggregate<TData extends RowData>(table: Table<TData>, column: Column<TData, unknown>): unknown {
+/**
+ * Computes a column's aggregation over the filtered (pre-pagination) rows:
+ * every leaf row, or only the top-level rows (`scope: 'roots'`, for tree data).
+ */
+export function computeColumnAggregate<TData extends RowData>(
+  table: Table<TData>,
+  column: Column<TData, unknown>,
+  scope: 'leaves' | 'roots' = 'leaves',
+): unknown {
   const fn = column.getAggregationFn();
   if (!fn) return undefined;
-  const leafRows = table.getFilteredRowModel().flatRows.filter((r) => !r.getIsGrouped() && r.subRows.length === 0);
-  return fn(column.id, leafRows, leafRows);
+  const filtered = table.getFilteredRowModel();
+  const rows = scope === 'roots' ? filtered.rows : filtered.flatRows.filter((r) => !r.getIsGrouped() && r.subRows.length === 0);
+  return fn(column.id, rows, rows);
 }
 
 function aggregationName<TData extends RowData>(column: Column<TData, unknown>): string | undefined {
@@ -62,7 +70,7 @@ export function GridFooter<TData extends RowData>({
           if (column && header && column.columnDef.footer) {
             content = flexRender(column.columnDef.footer, header.getContext());
           } else if (column?.columnDef.meta?.footerAggregation) {
-            const value = computeColumnAggregate(table, column);
+            const value = computeColumnAggregate(table, column, column.columnDef.meta.footerAggregation === 'roots' ? 'roots' : 'leaves');
             const format = column.columnDef.meta.formatAggregate;
             const name = aggregationName(column);
             const prefix = name ? labels.aggregateLabels[name] : undefined;
@@ -78,11 +86,13 @@ export function GridFooter<TData extends RowData>({
               key={item.id}
               role="gridcell"
               aria-colindex={colIndex + 1}
-              className={cellClassName}
+              className={
+                column?.columnDef.meta?.footerClassName ? `${cellClassName} ${column.columnDef.meta.footerClassName}` : cellClassName
+              }
               data-align={column ? getColumnAlign(column) : undefined}
               data-pinned={item.pinned || undefined}
               data-pinned-edge={item.edge ? item.pinned : undefined}
-              style={{ ...getCellLayoutStyle(item, fill), ...cellStyle }}
+              style={{ ...getCellLayoutStyle(item, fill), ...cellStyle, ...column?.columnDef.meta?.footerStyle }}
             >
               <div className="mdg-cell-content">{content}</div>
             </div>

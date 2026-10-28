@@ -34,6 +34,7 @@ import {
   DEFAULT_PAGE_SIZE_OPTIONS,
   DEFAULT_ROW_HEIGHT,
   DRAG_COLUMN_ID,
+  EXPAND_COLUMN_ID,
   SELECT_COLUMN_ID,
 } from './grid.constants';
 import type { FilterGroup, FilterPreset } from '../features/filtering/filter.types';
@@ -47,10 +48,12 @@ import type { ExcelExportOptions } from '../export/excel';
 import { createSelectColumn } from '../features/selection/selectColumn';
 import { createDragColumn } from '../features/drag-drop/dragColumn';
 import { createActionsColumn } from '../features/editing/actionsColumn';
-import { DefaultCell } from '../components/cells/DefaultCell';
+import { createExpandColumn } from '../features/expanding/expandColumn';
+import { copyToClipboard } from '../export/clipboard';
+import { DefaultAggregatedCell, DefaultCell } from '../components/cells/DefaultCell';
 import { isInternalColumnId } from '../export/shared';
 
-const INTERNAL_LEFT = [DRAG_COLUMN_ID, SELECT_COLUMN_ID];
+const INTERNAL_LEFT = [DRAG_COLUMN_ID, SELECT_COLUMN_ID, EXPAND_COLUMN_ID];
 const INTERNAL_RIGHT = [ACTIONS_COLUMN_ID];
 
 function defaultGetRowId<TData>(row: TData, index: number, parent?: Row<TData>): string {
@@ -326,17 +329,19 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
 
   // ---------------------------------------------------------------- columns
   const rowDragDisabled = sorting.length > 0 || grouping.length > 0;
+  const detailPanel = !!props.renderDetailPanel;
   const columns = useMemo(() => {
     const cols: ColumnDef<TData, unknown>[] = [];
     if (features.rowDragging) cols.push(createDragColumn<TData>());
     if (selectionEnabled) cols.push(createSelectColumn<TData>(props.selectionMode ?? 'multiple'));
+    if (detailPanel) cols.push(createExpandColumn<TData>());
     cols.push(...(props.columns as ColumnDef<TData, unknown>[]));
     if (features.editing && props.editMode === 'row') cols.push(createActionsColumn<TData>());
     return cols;
-  }, [features.rowDragging, selectionEnabled, props.selectionMode, props.columns, features.editing, props.editMode]);
+  }, [features.rowDragging, selectionEnabled, props.selectionMode, detailPanel, props.columns, features.editing, props.editMode]);
 
   const defaultColumn = useMemo<Partial<ColumnDef<TData, unknown>>>(
-    () => ({ minSize: 48, size: 160, maxSize: 2000, cell: DefaultCell, ...props.defaultColumn }),
+    () => ({ minSize: 48, size: 160, maxSize: 2000, cell: DefaultCell, aggregatedCell: DefaultAggregatedCell, ...props.defaultColumn }),
     [props.defaultColumn],
   );
 
@@ -347,6 +352,7 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
     defaultColumn,
     getRowId,
     getSubRows: props.getSubRows,
+    getRowCanExpand: props.getRowCanExpand ?? (detailPanel ? () => true : undefined),
     state: {
       sorting,
       globalFilter,
@@ -536,6 +542,9 @@ export function useDataGrid<TData extends RowData>(props: DataGridProps<TData>):
         if (colIndex >= 0) focusCellRef.current?.(rowIndex, colIndex);
       },
       exportCsv: (options) => exportToCsv(t(), options),
+      copyToClipboard: (options) => copyToClipboard(t(), options),
+      expandAll: () => t().toggleAllRowsExpanded(true),
+      collapseAll: () => t().toggleAllRowsExpanded(false),
       exportExcel: async (options?: ExcelExportOptions<TData>) => {
         const mod = await import('../export/excel');
         return mod.exportToExcel(t(), options);

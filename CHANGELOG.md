@@ -5,6 +5,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+### Added
+
+- Master/detail rows: `renderDetailPanel` renders a full-width panel below an expanded row (with an expand column), `getRowCanExpand` decides which rows expand. Panels are measured for virtualization, and nested grids keep their own keyboard navigation.
+- Tree data (`getSubRows`) shows expanders and indentation in the first data column (`treeColumnId` to choose another), toggled with the mouse or `Enter`.
+- Grouped column headers are laid out on a CSS grid: group headers are centred over their columns and ungrouped columns span every header row (`aria-rowspan`).
+- `meta.footerAggregation: 'roots'` totals top-level rows only (tree data whose parents carry their children's totals); `'leaves'` is the same as `true`.
+- `meta.headerStyle`, `meta.footerClassName` and `meta.footerStyle`.
+- Copy to clipboard as tab-separated text: `copyToClipboard` / `toClipboardText`, `api.copyToClipboard()` and a "Copy to clipboard" item in the export menu.
+- `api.expandAll()` and `api.collapseAll()`; the toolbar shows expand/collapse all for tree data too.
+- `Expander` component for custom cells.
+- Docs: a "Table recipes" page (resource workload, invoice aging, partner financial summary, status by month).
+
+### Changed
+
+- Aggregated cells in group rows use `meta.formatAggregate`, then `meta.format`, when the column has no `aggregatedCell`.
+- Tree parent rows render their own values with the column's `cell` renderer (not `aggregatedCell`).
+- CSV/Excel/clipboard exports of tree data include every level, parents before children (previously only top-level rows).
+- Header filter and menu buttons no longer reserve space while hidden, so narrow columns show their full label.
+
 ## [0.1.0] - 2026-10-22
 
 ### Added

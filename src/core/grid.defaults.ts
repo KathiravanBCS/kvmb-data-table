@@ -41,6 +41,9 @@ export interface DataGridLabels {
   exportExcelFiltered: string;
   exportExcelSelected: string;
   exporting: string;
+  copyToClipboard: string;
+  copiedRows: (count: number) => string;
+  copyFailed: string;
   sortAscending: string;
   sortDescending: string;
   clearSort: string;
@@ -70,6 +73,9 @@ export interface DataGridLabels {
   collapseGroup: string;
   expandAll: string;
   collapseAll: string;
+  expandRow: string;
+  collapseRow: string;
+  rowDetails: string;
   dragRow: string;
   dragColumn: string;
   resizeColumn: string;
@@ -129,6 +135,9 @@ export const defaultLabels: DataGridLabels = {
   exportExcelFiltered: 'Excel – filtered rows',
   exportExcelSelected: 'Excel – selected rows',
   exporting: 'Exporting…',
+  copyToClipboard: 'Copy to clipboard',
+  copiedRows: (n) => `Copied ${n.toLocaleString()} rows to the clipboard`,
+  copyFailed: 'Could not copy to the clipboard',
   sortAscending: 'Sort ascending',
   sortDescending: 'Sort descending',
   clearSort: 'Clear sort',
@@ -158,6 +167,9 @@ export const defaultLabels: DataGridLabels = {
   collapseGroup: 'Collapse group',
   expandAll: 'Expand all',
   collapseAll: 'Collapse all',
+  expandRow: 'Expand row',
+  collapseRow: 'Collapse row',
+  rowDetails: 'Row details',
   dragRow: 'Drag to reorder row',
   dragColumn: 'Drag to reorder column',
   resizeColumn: 'Resize column',

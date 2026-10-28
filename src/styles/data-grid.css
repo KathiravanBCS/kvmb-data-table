@@ -401,6 +401,31 @@
   gap: 2px;
 }
 
+/*
+ * Header buttons (transparent until hover/focus) take no space, so narrow columns
+ * keep their full label. They overlay the end of the cell, and join the layout again
+ * while a filter is active or a menu is open.
+ */
+.mdg-header-actions:not(:has([data-active], [aria-expanded='true'])) {
+  position: absolute;
+  inset-inline-end: calc(var(--dg-cell-px) / 2);
+  top: 50%;
+  transform: translateY(-50%);
+  padding-inline-start: 2px;
+}
+
+.mdg-th:hover .mdg-header-actions,
+.mdg-th:focus-within .mdg-header-actions {
+  background: var(--dg-header-bg);
+}
+
+@media (hover: none) {
+  .mdg-header-actions:not(:has([data-active], [aria-expanded='true'])) {
+    position: static;
+    transform: none;
+  }
+}
+
 .mdg-header-button:not([data-active]) {
   opacity: 0;
   transition: opacity 120ms ease;
@@ -554,4 +579,100 @@
     transition-duration: 0ms !important;
     animation-duration: 0ms !important;
   }
+}
+
+/* ------------------------------------------------------------------ multi-row headers */
+
+/* Header rows become a CSS grid so cells can span columns and rows. */
+/* A custom group header stays within the visible width when scrolled horizontally. */
+.mdg-group-header-cell {
+  position: sticky;
+  left: 0;
+  max-width: 100cqw;
+}
+
+.mdg-thead[data-grid] {
+  display: grid;
+  grid-auto-rows: minmax(var(--dg-row-height), auto);
+  background: var(--dg-header-bg);
+}
+
+.mdg-thead[data-grid] > .mdg-header-row {
+  display: contents;
+}
+
+.mdg-thead[data-grid] .mdg-th {
+  min-height: 0;
+  background: var(--dg-header-bg);
+}
+
+.mdg-root[data-with-row-borders] .mdg-thead[data-grid] .mdg-th {
+  border-bottom: 1px solid var(--dg-border-color);
+}
+
+/* Group headers ("Proposal amount" over USD / AED / …) are centred with a divider on each side. */
+.mdg-th[data-divider-start] {
+  border-inline-start: 1px solid var(--dg-border-color);
+}
+
+.mdg-th[data-divider-end] {
+  border-inline-end: 1px solid var(--dg-border-color);
+}
+
+/* With column borders, every grid-placed header draws its right edge (DOM siblings are not neighbours here). */
+.mdg-root[data-with-column-borders] .mdg-thead[data-grid] .mdg-th {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--dg-border-color);
+}
+
+.mdg-root[data-with-column-borders] .mdg-thead[data-grid] .mdg-th[data-last-col] {
+  border-inline-end: 0;
+}
+
+.mdg-th[data-group-header] .mdg-header-content {
+  justify-content: center;
+}
+
+/* ------------------------------------------------------------------ tree data & detail panels */
+
+.mdg-tree-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mdg-expander-spacer {
+  flex: none;
+  width: calc(1.375rem * var(--mantine-scale));
+}
+
+.mdg-expander {
+  flex: none;
+}
+
+.mdg-root .mdg-tbody .mdg-row-wrap > .mdg-tr.mdg-detail-row {
+  height: auto;
+  min-height: 0;
+  --dg-row-overlay: transparent;
+}
+
+.mdg-detail-cell {
+  position: sticky;
+  left: 0;
+  box-sizing: border-box;
+  width: 100cqw;
+  max-width: 100%;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md) var(--mantine-spacing-md);
+  background: var(--dg-detail-bg, var(--mantine-color-gray-0));
+  border-top: 1px solid var(--dg-border-color);
+}
+
+[data-mantine-color-scheme='dark'] .mdg-detail-cell {
+  background: var(--dg-detail-bg, var(--mantine-color-dark-8));
+}
+
+.mdg-row-wrap:has(> .mdg-detail-row) > .mdg-tr:first-child {
+  border-bottom-color: transparent;
 }

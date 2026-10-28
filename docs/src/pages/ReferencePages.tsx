@@ -11,6 +11,17 @@ const coreProps: PropRow[] = [
     description: 'Stable row id. Strongly recommended.',
   },
   { name: 'getSubRows', type: '(row, index) => TData[] | undefined', description: 'Tree data / server-provided groups.' },
+  { name: 'treeColumnId', type: 'string', description: 'Column showing the tree expanders and indentation. Default: first data column.' },
+  {
+    name: 'renderDetailPanel',
+    type: '({ row, table }) => ReactNode',
+    description: 'Full-width panel below an expanded row (master/detail). Adds an expand column.',
+  },
+  {
+    name: 'getRowCanExpand',
+    type: '(row) => boolean',
+    description: 'Which rows can expand. Default: every row with renderDetailPanel, else rows with sub rows.',
+  },
   {
     name: 'height / maxHeight',
     type: 'number | string',
@@ -159,6 +170,9 @@ export function ApiPage() {
   focusCell(rowIndex: number, columnId: string): void;
   exportCsv(options?: CsvExportOptions<TData>): CsvExportResult;
   exportExcel(options?: ExcelExportOptions<TData>): Promise<ExcelExportResult>;
+  copyToClipboard(options?: ClipboardCopyOptions<TData>): Promise<ClipboardCopyResult>;
+  expandAll(): void;
+  collapseAll(): void;
 }`}
         />
       </Section>
@@ -190,9 +204,9 @@ export function ApiPage() {
             <code>savePersistedState</code>, <code>clearPersistedState</code>.
           </List.Item>
           <List.Item>
-            <b>Export:</b> <code>exportToCsv</code>, <code>toCsv</code> (core); <code>exportToExcel</code>, <code>sanitizeSheetName</code>,{' '}
-            <code>escapeCsvCell</code>, <code>formatCsvValue</code>, <code>resolveExportRows</code>, <code>resolveExportColumns</code>,{' '}
-            <code>downloadBlob</code> (<code>/export</code>).
+            <b>Export:</b> <code>exportToCsv</code>, <code>toCsv</code>, <code>copyToClipboard</code>, <code>toClipboardText</code> (core);{' '}
+            <code>exportToExcel</code>, <code>sanitizeSheetName</code>, <code>escapeCsvCell</code>, <code>formatCsvValue</code>,{' '}
+            <code>resolveExportRows</code>, <code>resolveExportColumns</code>, <code>downloadBlob</code> (<code>/export</code>).
           </List.Item>
           <List.Item>
             <b>Misc:</b> <code>aggregationFns</code>, <code>defaultLabels</code>, and all the public types (<code>DataGridProps</code>,{' '}

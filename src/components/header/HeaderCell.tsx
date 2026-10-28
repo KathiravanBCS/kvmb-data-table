@@ -30,6 +30,11 @@ import { useOutsideDismiss } from '../../hooks/useOutsideDismiss';
 export interface HeaderCellProps<TData extends RowData> {
   header: Header<TData, unknown>;
   layout: ColumnLayoutItem;
+  /** Replaces the flex sizing style (multi-row headers are placed on a CSS grid). */
+  layoutStyle?: CSSProperties;
+  /** Number of header rows the cell spans. */
+  rowSpan?: number;
+  dataAttributes?: Record<`data-${string}`, true | undefined>;
   fill: boolean;
   /** Leaf header row (navigable) vs. group header row. */
   isLeafRow: boolean;
@@ -74,6 +79,7 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
   const canHide = isLeaf && features.hiding && column.getCanHide() && !column.columnDef.meta?.locked && !internal;
   const showMenu = isLeaf && !internal && (sortable || canPin || canGroup || canHide);
   const label = getColumnLabel(column);
+  const isGroupHeader = !header.isPlaceholder && header.subHeaders.length > 0;
 
   const draggable = props.sortableColumns && isLeaf && !internal && !layout.pinned && !column.columnDef.meta?.locked;
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
@@ -123,6 +129,7 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
       role="columnheader"
       aria-colindex={isLeaf || header.colSpan === 1 ? colIndex + 1 : undefined}
       aria-colspan={header.colSpan > 1 ? header.colSpan : undefined}
+      aria-rowspan={props.rowSpan && props.rowSpan > 1 ? props.rowSpan : undefined}
       aria-sort={ariaSort}
       tabIndex={isLeafRow ? (focused ? 0 : -1) : undefined}
       data-row-index={isLeafRow ? -1 : undefined}
@@ -136,8 +143,10 @@ export function HeaderCell<TData extends RowData>(props: HeaderCellProps<TData>)
       data-pinned-edge={layout.edge ? layout.pinned : undefined}
       data-dragging={isDragging || undefined}
       data-placeholder={header.isPlaceholder || undefined}
+      data-group-header={isGroupHeader || undefined}
+      {...props.dataAttributes}
       className={clsx(className, column.columnDef.meta?.headerClassName)}
-      style={{ ...getCellLayoutStyle(layout, fill), ...style, ...dragStyle }}
+      style={{ ...(props.layoutStyle ?? getCellLayoutStyle(layout, fill)), ...style, ...column.columnDef.meta?.headerStyle, ...dragStyle }}
       onKeyDown={handleKeyDown}
       onClick={(e) => {
         if ((e.target as HTMLElement).closest('button, input, [role="menu"], .mdg-resizer')) return;

@@ -1,5 +1,7 @@
 export { exportToCsv, toCsv, escapeCsvCell, formatCsvValue } from './csv';
 export type { CsvExportOptions, CsvExportResult } from './csv';
+export { copyToClipboard, toClipboardText } from './clipboard';
+export type { ClipboardCopyOptions, ClipboardCopyResult } from './clipboard';
 export { exportToExcel, sanitizeSheetName } from './excel';
 export type { ExcelExportOptions, ExcelExportResult, ExcelExportPhase, ExcelHeaderStyle, ExcelRawSheet, ExcelTableSheet } from './excel';
 export { downloadBlob, resolveExportColumns, resolveExportRows } from './shared';

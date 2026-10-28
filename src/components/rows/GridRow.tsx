@@ -16,6 +16,7 @@ export interface RowHandlers<TData extends RowData> {
   onTabNavigate: (rowIndex: number, colIndex: number, direction: 1 | -1) => void;
   onEditorExit: (rowIndex: number, colIndex: number) => void;
   renderGroupHeader?: (row: Row<TData>) => ReactNode;
+  renderDetailPanel?: (row: Row<TData>) => ReactNode;
   getRowClassName?: (row: Row<TData>) => string | undefined;
   getRowStyle?: (row: Row<TData>) => CSSProperties | undefined;
   canDragRow?: (row: Row<TData>) => boolean;
@@ -56,6 +57,8 @@ export interface GridRowProps<TData extends RowData> {
   renderVersion: number;
   /** Grid is a treegrid (grouping / sub rows): expose aria-level / aria-expanded. */
   tree: boolean;
+  /** Column showing the tree expander for `getSubRows` data. */
+  treeColumnId?: string;
 }
 
 function RowInner<TData extends RowData>(
@@ -71,9 +74,11 @@ function RowInner<TData extends RowData>(
   const isGroup = row.getIsGrouped();
   const rowEditing = activeEditColumn !== undefined;
 
+  // With detail panels the row and its panel are measured together through a wrapper.
+  const detailPanels = !!handlers.renderDetailPanel;
   const setRef = (el: HTMLDivElement | null) => {
     props.setNodeRef?.(el);
-    props.measureRef?.(el);
+    if (!detailPanels) props.measureRef?.(el);
   };
 
   const firstDraftCol = editState ? layout.findIndex((l) => l.id in editState.draft) : -1;
@@ -87,7 +92,7 @@ function RowInner<TData extends RowData>(
       aria-selected={row.getCanSelect() ? props.selected : undefined}
       aria-expanded={props.tree && (isGroup || row.getCanExpand()) ? props.expanded : undefined}
       aria-level={props.tree ? row.depth + 1 : undefined}
-      data-index={props.dataIndex}
+      data-index={detailPanels ? undefined : props.dataIndex}
       data-row-id={row.id}
       data-selected={props.selected || undefined}
       data-group={isGroup || undefined}
@@ -141,6 +146,7 @@ function RowInner<TData extends RowData>(
               editing={editing}
               labels={labels}
               wrap={props.wrap}
+              treeCell={item.id === props.treeColumnId}
               className={classNames.cell}
               style={styles.cell}
               onTabNavigate={handlers.onTabNavigate}
@@ -152,10 +158,27 @@ function RowInner<TData extends RowData>(
     </div>
   );
 
-  if (props.dragBindings) {
-    return <DragHandleContext.Provider value={props.dragBindings}>{rowElement}</DragHandleContext.Provider>;
+  let element = rowElement;
+  if (detailPanels) {
+    const open = props.expanded && !isGroup && row.subRows.length === 0;
+    element = (
+      <div role="presentation" className="mdg-row-wrap" ref={props.measureRef} data-index={props.dataIndex}>
+        {rowElement}
+        {open && (
+          <div role="row" className={clsx(classNames.row, 'mdg-detail-row')} data-detail-for={row.id}>
+            <div role="gridcell" aria-colindex={1} aria-colspan={layout.length} className="mdg-detail-cell">
+              {handlers.renderDetailPanel!(row)}
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
-  return rowElement;
+
+  if (props.dragBindings) {
+    return <DragHandleContext.Provider value={props.dragBindings}>{element}</DragHandleContext.Provider>;
+  }
+  return element;
 }
 
 type SortableBindings = NonNullable<React.ContextType<typeof DragHandleContext>>;
@@ -211,7 +234,8 @@ function areEqual<TData extends RowData>(prev: GridRowProps<TData>, next: GridRo
     prev.sortable === next.sortable &&
     prev.dragDisabled === next.dragDisabled &&
     prev.renderVersion === next.renderVersion &&
-    prev.tree === next.tree
+    prev.tree === next.tree &&
+    prev.treeColumnId === next.treeColumnId
   );
 }
 

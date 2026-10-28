@@ -27,8 +27,18 @@ export interface UseGridNavigationOptions<TData extends RowData> {
 
 const NAV_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown']);
 
+const GRID_SELECTOR = '[role="grid"], [role="treegrid"], [role="table"]';
+
+/** True when `el` belongs to this grid and not to a grid nested in a detail panel. */
+export function ownsElement(grid: HTMLElement | null, el: Element): boolean {
+  return !!grid && el.closest(GRID_SELECTOR) === grid;
+}
+
 function findCellElement(grid: HTMLElement | null, pos: FocusPosition): HTMLElement | null {
-  return grid?.querySelector<HTMLElement>(`[data-row-index="${pos.row}"][data-col-index="${pos.col}"]`) ?? null;
+  if (!grid) return null;
+  const matches = grid.querySelectorAll<HTMLElement>(`[data-row-index="${pos.row}"][data-col-index="${pos.col}"]`);
+  for (const el of matches) if (ownsElement(grid, el)) return el;
+  return null;
 }
 
 /**
@@ -88,7 +98,7 @@ export function useGridNavigation<TData extends RowData>(options: UseGridNavigat
   const syncFromElement = useCallback((target: EventTarget | null) => {
     if (!(target instanceof HTMLElement)) return;
     const cell = target.closest<HTMLElement>('[data-row-index][data-col-index]');
-    if (!cell || !optionsRef.current.gridRef.current?.contains(cell)) return;
+    if (!cell || !ownsElement(optionsRef.current.gridRef.current, cell)) return;
     const row = Number(cell.dataset.rowIndex);
     const col = Number(cell.dataset.colIndex);
     setFocused((prev) => (prev.row === row && prev.col === col ? prev : { row, col }));
@@ -133,7 +143,7 @@ export function useGridNavigation<TData extends RowData>(options: UseGridNavigat
       if (!opts.enabled || event.defaultPrevented) return;
       const target = event.target as HTMLElement;
       const cell = target.closest<HTMLElement>('[data-row-index][data-col-index]');
-      if (!cell) return;
+      if (!cell || !ownsElement(opts.gridRef.current, cell)) return;
       // Only handle keys on the cell itself or on pass-through controls (checkboxes, expanders).
       if (target !== cell && !target.hasAttribute('data-dg-nav-passthrough')) return;
 
@@ -187,6 +197,17 @@ export function useGridNavigation<TData extends RowData>(options: UseGridNavigat
       if (!gridRow) return;
 
       if (event.key === 'Enter' || event.key === 'F2') {
+        // Tree nodes and detail panels toggle with Enter unless the cell is editable.
+        if (
+          event.key === 'Enter' &&
+          !gridRow.getIsGrouped() &&
+          cell.querySelector('[data-dg-expander]') &&
+          !editing.isCellEditable(gridRow, columnId)
+        ) {
+          event.preventDefault();
+          gridRow.toggleExpanded();
+          return;
+        }
         if (gridRow.getIsGrouped() || (target.hasAttribute('data-dg-nav-passthrough') && target !== cell)) {
           if (gridRow.getIsGrouped() && event.key === 'Enter') {
             event.preventDefault();

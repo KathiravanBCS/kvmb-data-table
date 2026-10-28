@@ -16,6 +16,7 @@ export type {
   DataGridProps,
   DataGridQuery,
   DataGridStylesNames,
+  DetailPanelContext,
   EmptyStateContext,
   GridDensity,
   GroupHeaderContext,
@@ -110,6 +111,7 @@ export { FilterChips } from './components/toolbar/FilterChips';
 export { DensityMenu, ExportMenu, GroupingBar, SelectionBar } from './components/toolbar/ToolbarMenus';
 export { GridPagination } from './components/pagination/GridPagination';
 export { DragHandle } from './features/drag-drop/DragHandle';
+export { Expander } from './features/expanding/Expander';
 
 // Aggregation helpers
 export { aggregationFns } from './features/aggregation/aggregation';
@@ -117,5 +119,7 @@ export { aggregationFns } from './features/aggregation/aggregation';
 // Lightweight CSV export is part of the core; Excel lives in the `/export` entry.
 export { exportToCsv, toCsv } from './export/csv';
 export type { CsvExportOptions, CsvExportResult } from './export/csv';
+export { copyToClipboard, toClipboardText } from './export/clipboard';
+export type { ClipboardCopyOptions, ClipboardCopyResult } from './export/clipboard';
 export type { ExcelExportOptions, ExcelExportResult } from './export/excel';
 export type { ExportColumnScope, ExportRowScope } from './export/shared';

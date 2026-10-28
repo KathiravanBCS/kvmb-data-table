@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { grid, openPage } from './helpers';
 
-const pages = ['getting-started', 'filtering', 'editing', 'grouping', 'selection', 'theming'];
+const pages = ['getting-started', 'filtering', 'editing', 'grouping', 'recipes', 'selection', 'theming'];
 
 for (const slug of pages) {
   test(`axe: "${slug}" has no WCAG A/AA violations inside the grid`, async ({ page }) => {

@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
-import { ActionIcon, Loader, Tooltip } from '@mantine/core';
-import { IconAlertTriangle, IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { Loader, Tooltip } from '@mantine/core';
+import { IconAlertTriangle } from '@tabler/icons-react';
 import { flexRender, type Cell, type RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 import type { ColumnLayoutItem } from '../../features/pinning/pinning';
@@ -10,6 +10,7 @@ import type { DataGridLabels } from '../../core/grid.defaults';
 import type { GridEditing, GridSaveState } from '../../features/editing/useGridEditing';
 import { CellEditorHost } from '../editors/CellEditor';
 import { shallowEqualValue } from '../../features/editing/editing.utils';
+import { Expander } from '../../features/expanding/Expander';
 
 export interface GridCellProps<TData extends RowData> {
   cell: Cell<TData, unknown>;
@@ -31,6 +32,8 @@ export interface GridCellProps<TData extends RowData> {
   editing: GridEditing<TData>;
   labels: DataGridLabels;
   wrap: boolean;
+  /** This column shows the tree expander and indentation (`getSubRows` data). */
+  treeCell?: boolean;
   className: string;
   style?: CSSProperties;
   onTabNavigate: (rowIndex: number, colIndex: number, direction: 1 | -1) => void;
@@ -58,24 +61,9 @@ export function GridCell<TData extends RowData>(props: GridCellProps<TData>) {
       />
     );
   } else if (cell.getIsGrouped()) {
-    const expanded = row.getIsExpanded();
     content = (
       <span className="mdg-group-cell" style={{ paddingInlineStart: `calc(${row.depth} * var(--dg-group-indent))` }}>
-        <ActionIcon
-          size="sm"
-          variant="subtle"
-          color="gray"
-          tabIndex={-1}
-          data-dg-nav-passthrough=""
-          aria-label={expanded ? labels.collapseGroup : labels.expandGroup}
-          aria-expanded={expanded}
-          onClick={(e) => {
-            e.stopPropagation();
-            row.toggleExpanded();
-          }}
-        >
-          {expanded ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
-        </ActionIcon>
+        <Expander row={row} expandLabel={labels.expandGroup} collapseLabel={labels.collapseGroup} />
         <span className="mdg-cell-text">{flexRender(column.columnDef.cell, cell.getContext())}</span>
         <span className="mdg-group-count">
           (
@@ -87,10 +75,21 @@ export function GridCell<TData extends RowData>(props: GridCellProps<TData>) {
         </span>
       </span>
     );
-  } else if (cell.getIsAggregated()) {
+  } else if (cell.getIsAggregated() && row.getIsGrouped()) {
     content = flexRender(column.columnDef.aggregatedCell ?? column.columnDef.cell, cell.getContext());
   } else if (cell.getIsPlaceholder()) {
     content = null;
+  } else if (props.treeCell) {
+    content = (
+      <span className="mdg-tree-cell" style={{ paddingInlineStart: `calc(${row.depth} * var(--dg-group-indent))` }}>
+        {row.subRows.length > 0 && row.getCanExpand() ? (
+          <Expander row={row} expandLabel={labels.expandRow} collapseLabel={labels.collapseRow} />
+        ) : (
+          <span className="mdg-expander-spacer" aria-hidden />
+        )}
+        <span className="mdg-cell-text">{flexRender(column.columnDef.cell, cell.getContext())}</span>
+      </span>
+    );
   } else {
     content = flexRender(column.columnDef.cell, cell.getContext());
   }
@@ -117,6 +116,7 @@ export function GridCell<TData extends RowData>(props: GridCellProps<TData>) {
       data-editing={editingCell || undefined}
       data-dirty={dirty || undefined}
       data-wrap={(meta?.wrap ?? props.wrap) || undefined}
+      data-tree={props.treeCell || undefined}
       data-saving={save?.status === 'saving' || undefined}
       data-save-error={save?.status === 'error' || undefined}
       className={clsx(props.className, extraClass)}

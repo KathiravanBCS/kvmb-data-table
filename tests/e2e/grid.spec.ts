@@ -160,3 +160,43 @@ test('filter builder applies nested AND/OR conditions', async ({ page }) => {
   await expect.poll(async () => (await bodyColumn(page, 'name')).every((n) => n.includes('Ada'))).toBe(true);
   await expect(page.getByRole('list', { name: 'Filters' })).toContainText('Name contains Ada');
 });
+
+test('table recipes: detail panels, tree rows, spanning headers and copy to clipboard', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await openPage(page, 'recipes');
+
+  // Master / detail: the first resource starts expanded with a nested grouped grid.
+  const workload = page.getByRole('grid', { name: 'Resource workload' });
+  await expect(workload.getByRole('treegrid', { name: /Tasks for/ }).first()).toBeVisible();
+  const panel = workload.locator('.mdg-detail-row').first();
+  const next = workload.locator('.mdg-row-wrap').nth(1);
+  const panelBox = (await panel.boundingBox())!;
+  const nextBox = (await next.boundingBox())!;
+  // The following row starts below the panel (rows do not overlap it).
+  expect(nextBox.y).toBeGreaterThanOrEqual(panelBox.y + panelBox.height - 1);
+  await workload.getByRole('button', { name: 'Expand row' }).first().click();
+  await expect(workload.locator('.mdg-detail-row')).toHaveCount(2);
+
+  // Tree: partner rows expand to customers.
+  const partners = page.getByRole('treegrid', { name: 'Partner financial summary' });
+  const before = await partners.locator('.mdg-tbody [role="row"]').count();
+  await partners.getByRole('button', { name: 'Expand row' }).first().click();
+  await expect(partners.locator('.mdg-tbody [role="row"]')).not.toHaveCount(before);
+
+  // "Partner / customer / proposal" spans both header rows.
+  const nameHeader = partners.getByRole('columnheader', { name: 'Partner / customer / proposal' });
+  const usd = partners.getByRole('columnheader', { name: 'USD' });
+  const group = partners.getByRole('columnheader', { name: 'Proposal amount' });
+  const [nameBox, usdBox, groupBox] = await Promise.all([nameHeader.boundingBox(), usd.boundingBox(), group.boundingBox()]);
+  expect(Math.abs(nameBox!.height - (usdBox!.height + groupBox!.height))).toBeLessThan(2);
+  expect(Math.abs(nameBox!.y - groupBox!.y)).toBeLessThan(1);
+
+  // Copy to clipboard from the export menu of the invoice demo.
+  const invoices = page.locator('.mdg-root', { has: page.getByRole('treegrid', { name: 'Invoice outstanding by aging' }) });
+  await invoices.getByRole('button', { name: 'Export' }).click();
+  await page.getByRole('menuitem', { name: 'Copy to clipboard' }).click();
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('INV-2026-');
+  const text = await page.evaluate(() => navigator.clipboard.readText());
+  expect(text.split('\n')[0]).toBe('Invoice\tCustomer\tInvoiced\tDue\tDays late\tAmount\tOutstanding');
+  expect(text.trim().split('\n')).toHaveLength(37);
+});
