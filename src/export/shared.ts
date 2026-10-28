@@ -47,12 +47,13 @@ export function resolveExportColumns<TData extends RowData>(
   );
 }
 
+/** Data rows in display order: group rows are skipped, tree data is flattened depth-first. */
 function leafRows<TData extends RowData>(rows: Row<TData>[]): Row<TData>[] {
   const out: Row<TData>[] = [];
   const visit = (list: Row<TData>[]) => {
     for (const row of list) {
-      if (row.getIsGrouped()) visit(row.subRows);
-      else out.push(row);
+      if (!row.getIsGrouped()) out.push(row);
+      if (row.subRows.length) visit(row.subRows);
     }
   };
   visit(rows);

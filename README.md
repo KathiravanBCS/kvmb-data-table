@@ -21,10 +21,10 @@ It takes its look from your `MantineProvider` theme (light/dark mode, primary co
 | Selection          | Single/multiple, per-row rules, select page / all filtered, bulk actions, stable ids                                                                                                                    |
 | Columns            | Visibility, resizing (mouse + keyboard), reordering, left/right pinning, locking, width limits, saved layouts                                                                                          |
 | Editing            | Cell or row mode, text/number/select/multi-select/checkbox/date/date-time editors, custom editors, sync + async validation, dirty tracking, optimistic updates with rollback                         |
-| Grouping           | Multi-level groups, counts, aggregated cells, aggregate footer, custom group headers, server-provided trees                                                                                            |
+| Grouping           | Multi-level groups, counts, aggregated cells, aggregate footer, custom group headers, tree data with expanders, master/detail panels, grouped (row-spanning) column headers                                |
 | Drag & drop        | Row and column reordering with pointer and keyboard                                                                                                                                                     |
 | Performance        | Row virtualization, memoized rows (only rows whose inputs changed re-render)                                                                                                                           |
-| Export             | CSV in the core; `.xlsx` (ExcelJS, loaded on demand) from a separate entry point                                                                                                                       |
+| Export             | CSV and copy-to-clipboard in the core; `.xlsx` (ExcelJS, loaded on demand) from a separate entry point                                                                                                 |
 | Persistence        | Save and restore state in local/session/custom storage                                                                                                                                                 |
 | Accessibility      | WAI-ARIA grid/treegrid, roving tabindex, full keyboard support, live announcements, axe-checked in light and dark mode                                                                                 |
 
@@ -137,7 +137,7 @@ npm install
 npm run docs:dev        # http://127.0.0.1:5173
 ```
 
-Pages: getting started, column definitions, sorting, advanced filtering, pagination, inline editing, grouping & aggregation, virtualization, row selection, column management, drag & drop, CSV & Excel export, server-side data, Mantine themes, state persistence, accessibility, API reference, migration guides and troubleshooting.
+Pages: getting started, column definitions, sorting, advanced filtering, pagination, inline editing, grouping & aggregation, table recipes (master/detail, aging groups, tree financial summary, grouped headers), virtualization, row selection, column management, drag & drop, CSV & Excel export, server-side data, Mantine themes, state persistence, accessibility, API reference, migration guides and troubleshooting.
 
 ## Performance
 
@@ -173,8 +173,8 @@ Bundle sizes (minified, gzip):
 
 | File | Size |
 | --- | --- |
-| `dist/index.js` (core) | 26.7 kB |
-| `dist/styles.css` | 2.3 kB |
+| `dist/index.js` (core) | 28.2 kB |
+| `dist/styles.css` | 2.6 kB |
 | `dist/export/index.js` + chunks (CSV + Excel exporter, not ExcelJS) | ≈ 3.5 kB |
 
 ## Development

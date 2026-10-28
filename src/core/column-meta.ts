@@ -45,12 +45,20 @@ export interface DataGridColumnMeta<TData extends RowData, TValue> {
   cellClassName?: string | ((cell: Cell<TData, TValue>) => string | undefined);
   cellStyle?: CSSProperties | ((cell: Cell<TData, TValue>) => CSSProperties | undefined);
   headerClassName?: string;
+  headerStyle?: CSSProperties;
+  footerClassName?: string;
+  footerStyle?: CSSProperties;
 
   /** Formats values for display when no `cell` renderer is supplied. */
   format?: (value: TValue, row: Row<TData>) => ReactNode;
 
-  /** Show the column's `aggregationFn` result in the footer row. */
-  footerAggregation?: boolean;
+  /**
+   * Show the column's `aggregationFn` result in the footer row.
+   * - `true` / `'leaves'`: aggregate the filtered leaf rows (rows without sub rows).
+   * - `'roots'`: aggregate the filtered top-level rows. Use it for tree data whose
+   *   parent rows already carry the totals of their children.
+   */
+  footerAggregation?: boolean | 'leaves' | 'roots';
   /** Formats the aggregated footer value. */
   formatAggregate?: (value: unknown) => ReactNode;
 

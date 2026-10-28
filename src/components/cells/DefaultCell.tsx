@@ -20,3 +20,14 @@ export function DefaultCell<TData extends RowData>({ getValue, row, column }: Ce
   if (format) return <>{format(value, row)}</>;
   return <>{formatDisplayValue(value, labels.trueLabel, labels.falseLabel)}</>;
 }
+
+/** Default renderer for aggregated values in group rows: `meta.formatAggregate`, then `meta.format`. */
+export function DefaultAggregatedCell<TData extends RowData>({ getValue, row, column }: CellContext<TData, unknown>) {
+  const { labels } = useDataGridContext<TData>();
+  const value = getValue();
+  const meta = column.columnDef.meta;
+  if (value === undefined || value === null) return null;
+  if (meta?.formatAggregate) return <>{meta.formatAggregate(value)}</>;
+  if (meta?.format) return <>{meta.format(value, row)}</>;
+  return <>{formatDisplayValue(Array.isArray(value) ? value.join(' – ') : value, labels.trueLabel, labels.falseLabel)}</>;
+}

@@ -34,6 +34,7 @@ export interface GridBodyProps<TData extends RowData> {
   dragDisabled: boolean;
   renderVersion: number;
   tree: boolean;
+  treeColumnId?: string;
   /** Receives a function that scrolls a row index into view. */
   registerScrollToIndex: (fn: (index: number) => void) => void;
 }
@@ -67,6 +68,7 @@ function useRowProps<TData extends RowData>(props: GridBodyProps<TData>) {
       dragDisabled: props.dragDisabled,
       renderVersion: props.renderVersion,
       tree: props.tree,
+      treeColumnId: props.treeColumnId,
       ...extra,
     };
   };
@@ -124,9 +126,9 @@ function PlainRows<TData extends RowData>(props: GridBodyProps<TData>) {
   const { registerScrollToIndex, scrollRef } = props;
   useEffect(() => {
     registerScrollToIndex((index) => {
-      scrollRef.current
-        ?.querySelector<HTMLElement>(`[role="rowgroup"] [data-row-index="${index}"]`)
-        ?.scrollIntoView?.({ block: 'nearest' });
+      const cells = scrollRef.current?.querySelectorAll<HTMLElement>(`[role="rowgroup"] [data-row-index="${index}"]`) ?? [];
+      // Skip cells of grids nested in detail panels.
+      [...cells].find((el) => el.closest('.mdg-scroll') === scrollRef.current)?.scrollIntoView?.({ block: 'nearest' });
     });
   }, [registerScrollToIndex, scrollRef]);
   const getProps = useRowProps(props);

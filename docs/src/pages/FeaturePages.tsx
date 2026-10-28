@@ -57,13 +57,18 @@ export function ColumnsPage() {
               ],
               ['format', '(value, row) => ReactNode', 'Formats values when no cell renderer is given.'],
               ['cellClassName / cellStyle', 'string | (cell) => …', 'Conditional cell styling.'],
+              [
+                'headerClassName / headerStyle / footerClassName / footerStyle',
+                'string / CSSProperties',
+                'Header and footer cell styling.',
+              ],
               ['wrap', 'boolean', 'Wrap text in this column (combine with dynamicRowHeight).'],
               ['editable / editor / validate / setValue / parseValue', '…', 'See Inline editing.'],
               ['locked', 'boolean', 'The column cannot be hidden or reordered.'],
               [
                 'footerAggregation / formatAggregate',
-                'boolean / (value) => ReactNode',
-                'Show the aggregationFn result over the filtered rows in the footer.',
+                "boolean | 'leaves' | 'roots' / (value) => ReactNode",
+                "Show the aggregationFn result over the filtered rows in the footer ('roots': top-level rows only, for tree data).",
               ],
               ['exportValue / exportHeader / exportable / excelNumberFormat', '…', 'See Export.'],
             ].map(([k, t, d]) => (
@@ -350,7 +355,9 @@ export function GroupingPage() {
       <Alert variant="light" title="Client-side vs server-provided groups">
         <Text size="sm">
           Client-side grouping groups the rows already loaded into the grid. If your server returns groups, pass hierarchical data with{' '}
-          <code>getSubRows</code> and <code>manualGrouping</code>. The grid then renders the tree as it is, without regrouping it.
+          <code>getSubRows</code> and <code>manualGrouping</code>. The grid then renders the tree as it is, without regrouping it, with
+          expanders in the first column. See <a href="#/recipes">Table recipes</a> for master/detail rows, tree data and grouped column
+          headers.
         </Text>
       </Alert>
     </Page>

@@ -9,6 +9,7 @@ const slugs = [
   'pagination',
   'editing',
   'grouping',
+  'recipes',
   'virtualization',
   'selection',
   'column-management',

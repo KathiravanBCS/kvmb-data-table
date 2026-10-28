@@ -34,6 +34,7 @@ import {
   VirtualizationPage,
 } from './pages/FeaturePages';
 import { ApiPage, MigrationPage, TroubleshootingPage } from './pages/ReferencePages';
+import { RecipesPage } from './pages/RecipesPage';
 import { TableOfContents } from './components/TableOfContents';
 
 interface PageEntry {
@@ -53,6 +54,7 @@ const sections: { label: string; pages: PageEntry[] }[] = [
       { slug: 'pagination', label: 'Pagination', component: PaginationPage },
       { slug: 'editing', label: 'Inline editing', component: EditingPage },
       { slug: 'grouping', label: 'Grouping & aggregation', component: GroupingPage },
+      { slug: 'recipes', label: 'Table recipes', component: RecipesPage },
       { slug: 'virtualization', label: 'Virtualization', component: VirtualizationPage },
       { slug: 'selection', label: 'Row selection', component: SelectionPage },
       { slug: 'column-management', label: 'Column management', component: ColumnManagementPage },

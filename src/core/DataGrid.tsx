@@ -126,7 +126,7 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
   ctx.focusCellRef.current = (rowIndex, colIndex) => nav.moveTo({ row: rowIndex, col: colIndex });
 
   // ---------------------------------------------------------------- row handlers (stable)
-  const latest = useLatestRef({ props, nav, editing: editingProxy, features, rows, columnIds });
+  const latest = useLatestRef({ props, nav, editing: editingProxy, features, rows, columnIds, table });
   const handlers = useMemo<RowHandlers<TData>>(
     () => ({
       onRowClick: (row: Row<TData>, event: MouseEvent<HTMLDivElement>) => {
@@ -169,11 +169,14 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
             });
           }
         : undefined,
+      renderDetailPanel: props.renderDetailPanel
+        ? (row) => latest.current.props.renderDetailPanel?.({ row, table: latest.current.table })
+        : undefined,
       getRowClassName: props.getRowClassName ? (row) => latest.current.props.getRowClassName?.(row) : undefined,
       getRowStyle: props.getRowStyle ? (row) => latest.current.props.getRowStyle?.(row) : undefined,
       canDragRow: props.canDragRow ? (row) => latest.current.props.canDragRow?.(row) ?? true : undefined,
     }),
-    [latest, !!props.renderGroupHeader, !!props.getRowClassName, !!props.getRowStyle, !!props.canDragRow], // eslint-disable-line react-hooks/exhaustive-deps
+    [latest, !!props.renderGroupHeader, !!props.renderDetailPanel, !!props.getRowClassName, !!props.getRowStyle, !!props.canDragRow], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   // ---------------------------------------------------------------- styles
@@ -238,6 +241,10 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
   const gridAriaLabel = props['aria-label'];
   // Grouped / hierarchical rows follow the treegrid pattern (aria-level, aria-expanded).
   const tree = table.getState().grouping.length > 0 || !!props.getSubRows;
+  const treeColumnId =
+    props.getSubRows && table.getState().grouping.length === 0
+      ? (props.treeColumnId ?? columnIds.find((id) => !ctx.isInternalColumn(id)))
+      : undefined;
   const interactive = features.selection || features.editing || features.keyboardNavigation;
   const tableElement = (
     <div
@@ -336,12 +343,13 @@ export function DataGrid<TData extends RowData>(inputProps: DataGridProps<TData>
           scrollRef={scrollRef}
           headerRef={headerRef}
           rowHeight={rowHeight}
-          dynamicRowHeight={!!props.dynamicRowHeight || !!props.wrapText}
+          dynamicRowHeight={!!props.dynamicRowHeight || !!props.wrapText || !!props.renderDetailPanel}
           overscan={ctx.overscan}
           sortableRows={sortableRows}
           dragDisabled={ctx.rowDragDisabled || editing.active !== null}
           renderVersion={renderVersion}
           tree={tree}
+          treeColumnId={treeColumnId}
           registerScrollToIndex={registerScrollToIndex}
         />
       )}

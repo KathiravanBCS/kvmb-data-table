@@ -3,6 +3,7 @@ import type { GridDensity } from './grid.types';
 export const SELECT_COLUMN_ID = '__dg_select';
 export const DRAG_COLUMN_ID = '__dg_drag';
 export const ACTIONS_COLUMN_ID = '__dg_actions';
+export const EXPAND_COLUMN_ID = '__dg_expand';
 
 export const DEFAULT_ROW_HEIGHT: Record<GridDensity, number> = {
   compact: 32,

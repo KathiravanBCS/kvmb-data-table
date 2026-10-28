@@ -61,7 +61,7 @@ const CITIES: [string, string][] = [
 export const SKILLS = ['React', 'TypeScript', 'SQL', 'Go', 'Design', 'Negotiation', 'Excel', 'Python'];
 
 /** Deterministic pseudo-random generator so demos and tests are reproducible. */
-function mulberry32(seed: number) {
+export function mulberry32(seed: number) {
   return () => {
     seed |= 0;
     seed = (seed + 0x6d2b79f5) | 0;

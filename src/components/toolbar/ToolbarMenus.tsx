@@ -5,6 +5,7 @@ import {
   IconCheck,
   IconChevronsDown,
   IconChevronsUp,
+  IconCopy,
   IconDownload,
   IconFileSpreadsheet,
   IconFileTypeCsv,
@@ -52,7 +53,7 @@ export function DensityMenu<TData extends RowData>() {
 }
 
 export function ExportMenu<TData extends RowData>() {
-  const { table, labels, api, props } = useDataGridContext<TData>();
+  const { table, labels, api, props, announce } = useDataGridContext<TData>();
   const [busy, setBusy] = useState(false);
   const selectedCount = Object.keys(table.getState().rowSelection).length;
   const filename = 'export';
@@ -65,6 +66,16 @@ export function ExportMenu<TData extends RowData>() {
       else console.error(error);
     } finally {
       setBusy(false);
+    }
+  };
+  const copy = async () => {
+    try {
+      const { rowCount } = await api.copyToClipboard({ rows: selectedCount ? 'selected' : 'filtered' });
+      announce(labels.copiedRows(rowCount));
+    } catch (error) {
+      announce(labels.copyFailed);
+      if (props.onExportError) props.onExportError(error);
+      else console.error(error);
     }
   };
   return (
@@ -98,21 +109,27 @@ export function ExportMenu<TData extends RowData>() {
         <Menu.Item leftSection={<IconFileSpreadsheet size={16} />} disabled={!selectedCount} onClick={() => void excel('selected')}>
           {labels.exportExcelSelected}
         </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item leftSection={<IconCopy size={16} />} onClick={() => void copy()}>
+          {labels.copyToClipboard}
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );
 }
 
-/** Chips for the active grouping, with expand/collapse all. */
+/** Chips for the active grouping, with expand/collapse all (also shown for tree data). */
 export function GroupingBar<TData extends RowData>() {
-  const { table, labels } = useDataGridContext<TData>();
+  const { table, labels, props } = useDataGridContext<TData>();
   const grouping = table.getState().grouping;
-  if (!grouping.length) return null;
+  if (!grouping.length && !props.getSubRows) return null;
   return (
-    <Group gap={6} className="mdg-grouping-bar" aria-label={labels.groupedBy}>
-      <Text size="xs" className="mdg-muted">
-        {labels.groupedBy}
-      </Text>
+    <Group gap={6} className="mdg-grouping-bar" aria-label={grouping.length ? labels.groupedBy : undefined}>
+      {grouping.length > 0 && (
+        <Text size="xs" className="mdg-muted">
+          {labels.groupedBy}
+        </Text>
+      )}
       {grouping.map((id) => {
         const column = table.getColumn(id);
         const label = column ? getColumnLabel(column) : id;
